@@ -1,0 +1,36 @@
+# 忽略所有文件
+/*
+!.gitignore
+
+# 允许工作目录
+!backend/
+!backend/**/*
+!frontend/
+!frontend/**/*
+!utils/
+!utils/**/*
+
+# 允许 Go 源代码文件
+!*.go
+!go.mod
+!go.sum
+
+# 允许前端源代码文件
+!*.html
+!*.css
+!*.js
+
+# 允许项目文档
+!README*
+!LICENSE*
+!CHANGELOG*
+!CONTRIBUTING*
+
+# 允许必要的配置文件
+!*.yaml
+!*.yml
+!*.json
+!*.toml
+
+# 禁止所有可执行文件
+*.exe

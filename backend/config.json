@@ -1,0 +1,7 @@
+{
+    "release_mode": true,
+    "auto_migrate": true,
+    "dsn": "crms:P3hmdrBTsFBm5NEf@tcp(111.229.9.31:3306)/crms",
+    "jwt_secret": "cloResMgtsys",
+    "port": 36213
+}
