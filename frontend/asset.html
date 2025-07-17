@@ -561,6 +561,30 @@
             </div>
         </div>
 
+        <!-- 重命名资产模态框 -->
+        <div class="modal fade" id="renameAssetModal" tabindex="-1" aria-labelledby="renameAssetModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="renameAssetModalLabel">重命名资产</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="renameAssetForm">
+                            <div class="mb-3">
+                                <label for="newAssetName" class="form-label asset-form-label">新资产名称</label>
+                                <input type="text" class="form-control" id="newAssetName" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="submitRenameBtn">确认</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 分享资产模态框 -->
         <div class="modal fade" id="shareAssetModal" tabindex="-1" aria-labelledby="shareAssetModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -720,6 +744,7 @@
                     // 确保这些函数在全局作用域可用
                     window.shareAsset = shareAsset;
                     window.deleteAsset = deleteAsset;
+                    window.renameAsset = renameAsset;
                 });
             });
 
@@ -933,6 +958,15 @@
                 
                 // 如果是个人资产，显示修改、分享、删除按钮
                 if (isPrivate) {
+                    // 添加重命名按钮
+                    const renameBtn = document.createElement('button');
+                    renameBtn.className = 'btn btn-sm btn-outline-info me-2';
+                    renameBtn.innerHTML = '<i class="bi bi-tag"></i> 重命名';
+                    renameBtn.addEventListener('click', () => {
+                        renameAsset(asset.asset_id, asset.name);
+                    });
+                    btnGroup.appendChild(renameBtn);
+
                     // 修改按钮
                     const editBtn = document.createElement('button');
                     editBtn.className = 'btn btn-sm btn-outline-secondary me-2';
@@ -989,7 +1023,71 @@
                 
                 return card;
             }
-            
+
+            // 重命名资产
+            async function renameAsset(assetId, currentName) {
+                const authToken = Cookies.get('auth_token');
+                
+                if (!authToken) {
+                    showToast('请先登录', 'danger');
+                    return;
+                }
+                
+                // 获取模态框元素
+                const modal = document.getElementById('renameAssetModal');
+                const nameInput = document.getElementById('newAssetName');
+                
+                // 设置当前名称
+                nameInput.value = currentName;
+                
+                // 保存assetId到模态框
+                modal.dataset.assetId = assetId;
+                
+                // 显示模态框
+                const modalInstance = new bootstrap.Modal(modal);
+                modalInstance.show();
+                
+                // 添加确认按钮事件监听器
+                document.getElementById('submitRenameBtn').onclick = async function() {
+                    const newName = nameInput.value.trim();
+                    
+                    if (!newName || newName === currentName) {
+                        showToast('名称未更改', 'warning');
+                        return;
+                    }
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('asset_id', assetId);
+                        formData.append('reset_type', 'name');
+                        formData.append('new_name', newName);
+                        
+                        const response = await fetch(domain + '/asset/update', {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`
+                            },
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok) {
+                            showToast('资产重命名成功', 'success');
+                            // 关闭模态框
+                            modalInstance.hide();
+                            // 刷新资产列表
+                            fetchAssetList();
+                        } else {
+                            showToast('资产重命名失败: ' + (result.error || result.message), 'danger');
+                        }
+                    } catch (error) {
+                        console.error('重命名资产时出错:', error);
+                        showToast('重命名资产时出错: ' + error.message, 'danger');
+                    }
+                };
+            }
+
             // 查看资产详情
             async function viewAssetDetails(assetId) {
                 const authToken = Cookies.get('auth_token');
@@ -1287,11 +1385,16 @@
 
                         // 只有在查看模式下才显示密码切换功能和面板访问按钮
                         if (isViewMode) {
+                            // 在查看模式下显示并设置密码切换功能
+                            document.querySelectorAll('.password-toggle-btn').forEach(btn => {
+                                btn.style.display = 'block';
+                            });
                             setupPasswordToggle();
-                            // 将面板地址转换为可点击链接
-                            convertPanelAddressToLink();
+                            setTimeout(() => {
+                                convertPanelAddressToLink();
+                            }, 100);
                         } else {
-                            // 在编辑模式下隐藏所有密码切换按钮和面板访问按钮
+                            // 在编辑模式下隐藏密码切换按钮
                             document.querySelectorAll('.password-toggle-btn').forEach(btn => {
                                 btn.style.display = 'none';
                             });
@@ -1322,6 +1425,12 @@
 
             // 更新密码切换功能
             function setupPasswordToggle() {
+                // 移除所有现有的点击事件监听器
+                document.querySelectorAll('.password-toggle-btn').forEach(btn => {
+                    btn.replaceWith(btn.cloneNode(true));
+                });
+                
+                // 添加新的点击事件监听器
                 document.querySelectorAll('.password-toggle-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const targetId = this.getAttribute('data-target');
@@ -1364,17 +1473,35 @@
             // 将面板地址转换为可点击链接
             function convertPanelAddressToLink() {
                 const panelAddressField = document.getElementById('panelAddress');
-                if (!panelAddressField || !panelAddressField.value) return;
+                if (!panelAddressField) return;
+                
+                // 移除已存在的按钮
+                const existingBtn = panelAddressField.nextElementSibling;
+                if (existingBtn && existingBtn.classList.contains('btn')) {
+                    existingBtn.remove();
+                }
+                
+                // 检查是否有有效的地址
+                const address = panelAddressField.value.trim();
+                if (!address) return;
                 
                 // 确保地址以http://或https://开头
-                let address = panelAddressField.value.trim();
+                let finalAddress = address;
                 if (!address.startsWith('http://') && !address.startsWith('https://')) {
-                    address = 'http://' + address;
+                    finalAddress = 'http://' + address;
+                }
+                
+                try {
+                    // 验证URL是否有效
+                    new URL(finalAddress);
+                } catch (e) {
+                    console.error('无效的面板地址:', address);
+                    return;
                 }
                 
                 // 创建链接按钮
                 const linkBtn = document.createElement('a');
-                linkBtn.href = address;
+                linkBtn.href = finalAddress;
                 linkBtn.target = '_blank';
                 linkBtn.rel = 'noopener noreferrer';
                 linkBtn.className = 'btn btn-sm btn-outline-primary ms-2';
@@ -1383,7 +1510,21 @@
                 // 将按钮添加到输入框后面
                 panelAddressField.insertAdjacentElement('afterend', linkBtn);
             }
-            
+
+            document.getElementById('addAssetModal').addEventListener('hidden.bs.modal', function() {
+                // 移除所有面板访问按钮
+                document.querySelectorAll('#panelAddress + a.btn').forEach(btn => {
+                    btn.remove();
+                });
+                
+                // 重置密码字段类型
+                document.querySelectorAll('input[type="password"], input[type="text"][data-original-type="password"]').forEach(input => {
+                    if (input.getAttribute('data-original-type')) {
+                        input.type = input.getAttribute('data-original-type');
+                    }
+                });
+            });
+
             // 显示添加资产模态框
             function showAddAssetModal() {
                 const modal = document.getElementById('addAssetModal');
