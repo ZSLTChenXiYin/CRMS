@@ -11,7 +11,7 @@ type config struct {
 	ReleaseMode bool   `json:"release_mode"`
 	AutoMigrate bool   `json:"auto_migrate"`
 	DSN         string `json:"dsn"`
-	JwtSecret   string `json:"jwt_secret"`
+	JwtSecret   []byte `json:"jwt_secret"`
 	Port        int    `json:"port"`
 }
 

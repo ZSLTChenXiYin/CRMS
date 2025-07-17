@@ -25,6 +25,7 @@
 !LICENSE*
 !CHANGELOG*
 !CONTRIBUTING*
+!*.md
 
 # 允许必要的配置文件
 !*.yaml

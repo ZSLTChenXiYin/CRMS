@@ -34,6 +34,7 @@ func PostAddAsset(c *gin.Context) {
 			"message": "添加个人资产失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -52,11 +53,13 @@ func PostAddAsset(c *gin.Context) {
 				"message": "添加个人资产失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 			return
 		}
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "无效的资源类型",
+			"message": "添加个人资产失败",
+			"error":   "无效的资源类型",
 		})
 		return
 	}
@@ -77,6 +80,7 @@ func PostAddAsset(c *gin.Context) {
 			"message": "添加个人资产失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -98,21 +102,21 @@ func PostAddAsset(c *gin.Context) {
 
 		additional_infomation_json, err := json.Marshal(additional_information)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 		} else {
 			operation_log.AdditionalInformation = additional_infomation_json
 		}
 
 		err = service.NewOperationLogService(com.Database).CreateOperationLog(operation_log)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 
 			json_data, err := json.Marshal(operation_log)
 			if err != nil {
-				log.Println("操作日志记录错误:", err)
+				log.Println("[操作日志记录错误]", err)
 			}
 
-			log.Println("操作日志记录:", string(json_data))
+			log.Println("[操作日志备份]", string(json_data))
 			return
 		}
 	}()
@@ -140,6 +144,7 @@ func DeleteAsset(c *gin.Context) {
 			"message": "删除个人资产失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -150,6 +155,7 @@ func DeleteAsset(c *gin.Context) {
 			"message": "删除个人资产失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -158,20 +164,23 @@ func DeleteAsset(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "资产不存在",
+				"message": "删除个人资产失败",
+				"error":   "资产不存在",
 			})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "删除个人资产失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 		}
 		return
 	}
 	// 检查资产是否属于当前用户
 	if asset.OwnerID != user_token.UserID {
 		c.JSON(http.StatusForbidden, gin.H{
-			"message": "无权限删除",
+			"message": "删除个人资产失败",
+			"error":   "无权限删除",
 		})
 	}
 
@@ -182,6 +191,7 @@ func DeleteAsset(c *gin.Context) {
 			"message": "删除个人资产失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -192,6 +202,7 @@ func DeleteAsset(c *gin.Context) {
 			"message": "删除个人资产失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -212,21 +223,21 @@ func DeleteAsset(c *gin.Context) {
 
 		additional_infomation_json, err := json.Marshal(additional_information)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 		} else {
 			operation_log.AdditionalInformation = additional_infomation_json
 		}
 
 		err = service.NewOperationLogService(com.Database).CreateOperationLog(operation_log)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 
 			json_data, err := json.Marshal(operation_log)
 			if err != nil {
-				log.Println("操作日志记录错误:", err)
+				log.Println("[操作日志记录错误]", err)
 			}
 
-			log.Println("操作日志记录:", string(json_data))
+			log.Println("[操作日志备份]", string(json_data))
 			return
 		}
 	}()
@@ -250,6 +261,7 @@ func GetAssetList(c *gin.Context) {
 			"message": "获取资产列表失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -263,6 +275,7 @@ func GetAssetList(c *gin.Context) {
 				"message": "获取资产列表失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 			return
 		}
 	}
@@ -279,6 +292,7 @@ func GetAssetList(c *gin.Context) {
 					"message": "获取资产列表失败",
 					"error":   err.Error(),
 				})
+				log.Panicln("[ERROR]", err)
 				return
 			}
 			public_asset_list[index] = *public_asset
@@ -289,53 +303,62 @@ func GetAssetList(c *gin.Context) {
 				"message": "获取资产列表失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 			return
 		}
 	}
 
 	// 构建资产列表
 	type _AssetList struct {
-		Type     string `json:"type"`
-		Name     string `json:"name"`
-		CreateAt int64  `json:"create_at"`
-		UpdateAt int64  `json:"update_at"`
+		AssetID    uint      `json:"asset_id"`
+		Type       string    `json:"type"`
+		Name       string    `json:"name"`
+		CreatedAt  time.Time `json:"created_at"`
+		UpdatedAt  time.Time `json:"updated_at"`
+		Permission string    `json:"permission"`
 	}
 
-	asset_list := make([]_AssetList, len(private_asset_list)+len(public_asset_list))
+	_private_asset_list := make([]_AssetList, len(private_asset_list))
+	_public_asset_list := make([]_AssetList, len(public_asset_list))
 
 	for index, asset := range private_asset_list {
-		asset_list[index] = _AssetList{
-			Type:     asset.Type,
-			Name:     asset.Name,
-			CreateAt: asset.CreatedAt.Unix(),
-			UpdateAt: asset.UpdatedAt.Unix(),
+		_private_asset_list[index] = _AssetList{
+			AssetID:    asset.ID,
+			Type:       asset.Type,
+			Name:       asset.Name,
+			CreatedAt:  asset.CreatedAt,
+			UpdatedAt:  asset.UpdatedAt,
+			Permission: "execute",
 		}
 	}
 	for index, asset := range public_asset_list {
-		asset_list[index+len(private_asset_list)] = _AssetList{
-			Type:     asset.Type,
-			Name:     asset.Name,
-			CreateAt: asset.CreatedAt.Unix(),
-			UpdateAt: asset.UpdatedAt.Unix(),
+		_public_asset_list[index] = _AssetList{
+			AssetID:    asset.ID,
+			Type:       asset.Type,
+			Name:       asset.Name,
+			CreatedAt:  asset.CreatedAt,
+			UpdatedAt:  asset.UpdatedAt,
+			Permission: shared_asset_list[index].Permission,
 		}
 	}
 
 	// 返回结果
 	c.JSON(http.StatusOK, gin.H{
-		"message":    "获取资产列表成功",
-		"asset_list": asset_list,
+		"message":            "获取资产列表成功",
+		"private_asset_list": _private_asset_list,
+		"public_asset_list":  _public_asset_list,
 	})
 }
 
 // 查询指定资产信息（个人资产和有权限的非个人资产）
 //
+// 查询参数：query
+//
+//	asset_id: uint (资产ID)
+//
 // 请求头参数：
 //
 //	Authorization: Bearer <token>
-//
-// 请求体参数：form
-//
-//	asset_id: uint (资产ID)
 func GetAssetInfo(c *gin.Context) {
 	user_token, err := service.AnalyzeToken(c)
 	if err != nil {
@@ -343,16 +366,18 @@ func GetAssetInfo(c *gin.Context) {
 			"message": "查询资产信息失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
 	// 处理用户请求
-	asset_id, err := strconv.ParseUint(c.PostForm("asset_id"), 10, 64)
+	asset_id, err := strconv.ParseUint(c.Query("asset_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "查询资产信息失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -365,6 +390,7 @@ func GetAssetInfo(c *gin.Context) {
 			"message": "查询资产信息失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -376,6 +402,7 @@ func GetAssetInfo(c *gin.Context) {
 				"message": "查询资产信息失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 			return
 		}
 
@@ -390,7 +417,8 @@ func GetAssetInfo(c *gin.Context) {
 
 		if !permission {
 			c.JSON(http.StatusForbidden, gin.H{
-				"message": "无权限查看资产信息",
+				"message": "查询资产信息失败",
+				"error":   "无权限查看资产信息",
 			})
 			return
 		}
@@ -423,6 +451,7 @@ func PutAssetInfo(c *gin.Context) {
 			"message": "修改资产信息失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -433,6 +462,7 @@ func PutAssetInfo(c *gin.Context) {
 			"message": "修改资产信息失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 	reset_type := c.PostForm("reset_type")
@@ -444,15 +474,17 @@ func PutAssetInfo(c *gin.Context) {
 		return
 	}
 	new_name := c.PostForm("new_name")
-	if new_name == "" {
+	if reset_type == "name" && new_name == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "资产名称不能为空",
+			"message": "修改资产信息失败",
+			"error":   "资产名称不能为空",
 		})
 	}
 	new_data := c.PostForm("new_data")
-	if new_data == "" {
+	if reset_type == "data" && new_data == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "资产数据不能为空",
+			"message": "修改资产信息失败",
+			"error":   "资产数据不能为空",
 		})
 		return
 	}
@@ -466,6 +498,7 @@ func PutAssetInfo(c *gin.Context) {
 			"message": "修改资产信息失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -476,6 +509,7 @@ func PutAssetInfo(c *gin.Context) {
 				"message": "修改资产信息失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 			return
 		}
 
@@ -484,7 +518,8 @@ func PutAssetInfo(c *gin.Context) {
 			if mapping.UserID == user_token.UserID {
 				if mapping.Permission != "execute" {
 					c.JSON(http.StatusForbidden, gin.H{
-						"message": "无权限修改资产信息",
+						"message": "修改资产信息失败",
+						"error":   "无权限修改资产信息",
 					})
 					return
 				}
@@ -496,7 +531,8 @@ func PutAssetInfo(c *gin.Context) {
 
 		if !ok {
 			c.JSON(http.StatusForbidden, gin.H{
-				"message": "无权限修改资产信息",
+				"message": "修改资产信息失败",
+				"error":   "无权限修改资产信息",
 			})
 			return
 		}
@@ -511,6 +547,7 @@ func PutAssetInfo(c *gin.Context) {
 				"message": "修改资产名称失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 		}
 	case "data":
 		// 修改资产数据
@@ -520,6 +557,7 @@ func PutAssetInfo(c *gin.Context) {
 				"message": "修改资产数据失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 			return
 		}
 	}
@@ -541,21 +579,21 @@ func PutAssetInfo(c *gin.Context) {
 
 		additional_infomation_json, err := json.Marshal(additional_information)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 		} else {
 			operation_log.AdditionalInformation = additional_infomation_json
 		}
 
 		err = service.NewOperationLogService(com.Database).CreateOperationLog(operation_log)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 
 			json_data, err := json.Marshal(operation_log)
 			if err != nil {
-				log.Println("操作日志记录错误:", err)
+				log.Println("[操作日志记录错误]", err)
 			}
 
-			log.Println("操作日志记录:", string(json_data))
+			log.Println("[操作日志备份]", string(json_data))
 			return
 		}
 	}()
@@ -585,6 +623,7 @@ func PostShareAsset(c *gin.Context) {
 			"message": "分享个人资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -595,6 +634,7 @@ func PostShareAsset(c *gin.Context) {
 			"message": "分享个人资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 	email := c.PostForm("email")
@@ -607,13 +647,15 @@ func PostShareAsset(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "分享用户不存在",
+				"message": "分享个人资产权限失败",
+				"error":   "分享用户不存在",
 			})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "分享个人资产权限失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 		}
 		return
 	}
@@ -628,13 +670,15 @@ func PostShareAsset(c *gin.Context) {
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"message": "资产不存在",
+					"message": "分享个人资产权限失败",
+					"error":   "资产不存在",
 				})
 			} else {
 				c.JSON(http.StatusInternalServerError, gin.H{
 					"message": "分享个人资产权限失败",
 					"error":   err.Error(),
 				})
+				log.Panicln("[ERROR]", err)
 			}
 			return
 		}
@@ -642,13 +686,15 @@ func PostShareAsset(c *gin.Context) {
 		// 校验资产是否属于当前用户
 		if asset.OwnerID != user_token.UserID {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "没有分享权限",
+				"message": "分享个人资产权限失败",
+				"error":   "没有分享权限",
 			})
 			return
 		}
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "分享权限错误",
+			"message": "分享个人资产权限失败",
+			"error":   "分享权限错误",
 		})
 		return
 	}
@@ -660,6 +706,7 @@ func PostShareAsset(c *gin.Context) {
 			"message": "分享个人资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -681,21 +728,21 @@ func PostShareAsset(c *gin.Context) {
 
 		additional_infomation_json, err := json.Marshal(additional_information)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 		} else {
 			operation_log.AdditionalInformation = additional_infomation_json
 		}
 
 		err = service.NewOperationLogService(com.Database).CreateOperationLog(operation_log)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 
 			json_data, err := json.Marshal(operation_log)
 			if err != nil {
-				log.Println("操作日志记录错误:", err)
+				log.Println("[操作日志记录错误]", err)
 			}
 
-			log.Println("操作日志记录:", string(json_data))
+			log.Println("[操作日志备份]", string(json_data))
 			return
 		}
 	}()
@@ -719,37 +766,77 @@ func GetShareAsset(c *gin.Context) {
 			"message": "查询个人分享的资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
-	// 获取用户分享的资产
-	user_asset_mappings, err := service.NewUserAssetService(com.Database).GetUserAssetMappingsByUserId(user_token.UserID)
+	// 获取用户分享的资产权限
+	assets, err := service.NewAssetService(com.Database).GetAssetByOwnerID(user_token.UserID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "查询个人分享的资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
+	user_asset_service := service.NewUserAssetService(com.Database)
+	user_asset_mappings := []service.UserAssetMapping{}
+	for _, asset := range assets {
+		mappings, err := user_asset_service.GetUserAssetMappingsByAssetId(asset.ID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "查询个人分享的资产权限失败",
+				"error":   err.Error(),
+			})
+			log.Panicln("[ERROR]", err)
+		}
+		user_asset_mappings = append(user_asset_mappings, mappings...)
+	}
+
+	user_service := service.NewUserService(com.Database)
+	users := make([]service.User, len(user_asset_mappings))
+	for index, mapping := range user_asset_mappings {
+		user, err := user_service.GetUserByID(mapping.UserID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "查询用户失败",
+				"error":   err.Error(),
+			})
+			log.Panicln("[ERROR]", err)
+		}
+		users[index] = *user
+	}
+
 	type _Mapping struct {
-		ID         uint   `json:"id"`
-		AssetID    uint   `json:"asset_id"`
-		UserID     uint   `json:"user_id"`
-		Permission string `json:"permission"`
-		CreateAt   int64  `json:"create_at"`
-		UpdateAt   int64  `json:"update_at"`
+		ID         uint      `json:"id"`
+		AssetID    uint      `json:"asset_id"`
+		AssetType  string    `json:"asset_type"`
+		AssetName  string    `json:"asset_name"`
+		UserID     uint      `json:"user_id"`
+		UserEmail  string    `json:"user_email"`
+		Permission string    `json:"permission"`
+		CreateAt   time.Time `json:"create_at"`
+		UpdateAt   time.Time `json:"update_at"`
 	}
 
 	mappings := make([]_Mapping, len(user_asset_mappings))
 	for index, mapping := range user_asset_mappings {
-		mappings[index] = _Mapping{
-			ID:         mapping.ID,
-			AssetID:    mapping.AssetID,
-			UserID:     mapping.UserID,
-			Permission: mapping.Permission,
-			CreateAt:   mapping.CreatedAt.Unix(),
-			UpdateAt:   mapping.UpdatedAt.Unix(),
+		for _, asset := range assets {
+			if asset.ID == mapping.AssetID {
+				mappings[index] = _Mapping{
+					ID:         mapping.ID,
+					AssetID:    mapping.AssetID,
+					AssetType:  asset.Type,
+					AssetName:  asset.Name,
+					UserID:     mapping.UserID,
+					UserEmail:  users[index].Email,
+					Permission: mapping.Permission,
+					CreateAt:   mapping.CreatedAt,
+					UpdateAt:   mapping.UpdatedAt,
+				}
+			}
 		}
 	}
 
@@ -778,6 +865,7 @@ func PutShareAsset(c *gin.Context) {
 			"message": "修改个人分享的资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -788,6 +876,7 @@ func PutShareAsset(c *gin.Context) {
 			"message": "修改个人分享的资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 	asset_id, err := strconv.ParseUint(c.PostForm("asset_id"), 10, 64)
@@ -796,12 +885,14 @@ func PutShareAsset(c *gin.Context) {
 			"message": "修改个人分享的资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 	new_permission := c.PostForm("permission")
 	if new_permission != "use" && new_permission != "execute" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "无效的分享权限",
+			"message": "修改个人分享的资产权限失败",
+			"error":   "无效的分享权限",
 		})
 		return
 	}
@@ -811,13 +902,15 @@ func PutShareAsset(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "资产不存在",
+				"message": "修改个人分享的资产权限失败",
+				"error":   "资产不存在",
 			})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "修改个人分享的资产权限失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 		}
 		return
 	}
@@ -825,7 +918,8 @@ func PutShareAsset(c *gin.Context) {
 	// 检查资产是否属于当前用户
 	if asset.OwnerID != user_token.UserID {
 		c.JSON(http.StatusForbidden, gin.H{
-			"message": "无权限修改资产信息",
+			"message": "修改个人分享的资产权限失败",
+			"error":   "无权限修改资产信息",
 		})
 		return
 	}
@@ -837,6 +931,7 @@ func PutShareAsset(c *gin.Context) {
 			"message": "修改个人分享的资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -857,21 +952,21 @@ func PutShareAsset(c *gin.Context) {
 
 		additional_infomation_json, err := json.Marshal(additional_information)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 		} else {
 			operation_log.AdditionalInformation = additional_infomation_json
 		}
 
 		err = service.NewOperationLogService(com.Database).CreateOperationLog(operation_log)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 
 			json_data, err := json.Marshal(operation_log)
 			if err != nil {
-				log.Println("操作日志记录错误:", err)
+				log.Println("[操作日志记录错误]", err)
 			}
 
-			log.Println("操作日志记录:", string(json_data))
+			log.Println("[操作日志备份]", string(json_data))
 			return
 		}
 	}()
@@ -900,6 +995,7 @@ func DeleteShareAsset(c *gin.Context) {
 			"message": "撤销个人分享的资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -910,6 +1006,7 @@ func DeleteShareAsset(c *gin.Context) {
 			"message": "撤销个人分享的资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 	asset_id, err := strconv.ParseUint(c.PostForm("asset_id"), 10, 64)
@@ -918,6 +1015,7 @@ func DeleteShareAsset(c *gin.Context) {
 			"message": "撤销个人分享的资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -928,7 +1026,8 @@ func DeleteShareAsset(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "资产不存在",
+				"message": "撤销个人分享的资产权限失败",
+				"error":   "资产不存在",
 			})
 			return
 		} else {
@@ -936,6 +1035,7 @@ func DeleteShareAsset(c *gin.Context) {
 				"message": "撤销个人分享的资产权限失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 			return
 		}
 	}
@@ -943,7 +1043,8 @@ func DeleteShareAsset(c *gin.Context) {
 	// 检查资产是否属于当前用户
 	if asset.OwnerID != user_token.UserID {
 		c.JSON(http.StatusForbidden, gin.H{
-			"message": "无权限撤销资产信息",
+			"message": "撤销个人分享的资产权限失败",
+			"error":   "无权限撤销资产信息",
 		})
 		return
 	}
@@ -955,6 +1056,7 @@ func DeleteShareAsset(c *gin.Context) {
 			"message": "撤销个人分享的资产权限失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -975,21 +1077,21 @@ func DeleteShareAsset(c *gin.Context) {
 
 		additional_infomation_json, err := json.Marshal(additional_information)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 		} else {
 			operation_log.AdditionalInformation = additional_infomation_json
 		}
 
 		err = service.NewOperationLogService(com.Database).CreateOperationLog(operation_log)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 
 			json_data, err := json.Marshal(operation_log)
 			if err != nil {
-				log.Println("操作日志记录错误:", err)
+				log.Println("[操作日志记录错误]", err)
 			}
 
-			log.Println("操作日志记录:", string(json_data))
+			log.Println("[操作日志备份]", string(json_data))
 			return
 		}
 	}()

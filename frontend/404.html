@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="cn" class="h-100">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="assets/icon/zslt-official.ico" type="image/x-icon">
+        <title>东西不见了 | QwQ</title>
+        <link href="bootstrap-5.3.6/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            /* 自定义404页面样式 */
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                margin: 0;
+            }
+            
+            .main-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .error-container {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 2rem;
+                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 200 200"><path fill="%23f8f9fa" d="M58 10L10 58v84l48 48h84l48-48V58l-48-48H58z"/></svg>') no-repeat center 30%;
+                background-size: 150px;
+                min-height: calc(100vh - 120px); /* 减去导航和页尾的大致高度 */
+            }
+            
+            .error-content {
+                max-width: 600px;
+                margin: 0 auto;
+                padding-top: 120px;
+            }
+            
+            .error-mascot {
+                font-size: clamp(3rem, 8vw, 4rem); /* 响应式字体大小 */
+                margin-bottom: 1rem;
+            }
+            
+            .error-title {
+                font-size: clamp(1.8rem, 5vw, 2.5rem);
+                font-weight: bold;
+                color: #6c757d;
+                margin-bottom: 1rem;
+            }
+            
+            .error-subtitle {
+                font-size: clamp(1rem, 3vw, 1.25rem);
+                margin-bottom: 2rem;
+                color: #adb5bd;
+                font-style: italic;
+            }
+            
+            .error-actions {
+                margin-top: 2rem;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            
+            .btn-paw {
+                position: relative;
+                padding-right: 50px;
+                overflow: hidden;
+                transition: all 0.3s;
+                white-space: nowrap;
+            }
+            
+            .btn-paw:hover {
+                transform: translateY(-3px);
+            }
+            
+            .btn-paw::after {
+                content: "🐾";
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                opacity: 0;
+                transition: all 0.3s;
+            }
+            
+            .btn-paw:hover::after {
+                opacity: 1;
+                right: 20px;
+            }
+            
+            .cloud-bg {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: -1;
+                opacity: 0.1;
+                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%230d6efd" d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat center bottom;
+                background-size: cover;
+            }
+
+            /* 响应式调整 */
+            @media (max-width: 768px) {
+                .error-content {
+                    padding-top: 80px;
+                }
+                
+                .error-actions {
+                    flex-direction: column;
+                    align-items: center;
+                }
+                
+                .btn-paw {
+                    width: 100%;
+                    max-width: 300px;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .navbar-brand {
+                    font-size: 1rem;
+                }
+                
+                .footer-custom .row {
+                    flex-direction: column;
+                }
+                
+                .footer-custom .col-md-6,
+                .footer-custom .col-md-3 {
+                    margin-bottom: 1.5rem;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .error-content {
+                    padding-top: 60px;
+                }
+                
+                .error-mascot {
+                    margin-bottom: 0.5rem;
+                }
+                
+                .error-title {
+                    margin-bottom: 0.5rem;
+                }
+                
+                .error-subtitle {
+                    margin-bottom: 1.5rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand navbar-logo-custom" href="index.html">
+                    <img src="assets/icon/zslt-official.ico" alt="Logo" width="24" height="24" class="d-inline-block align-text-top">
+                    云库
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarScroll">
+                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                        <li class="nav-item">
+                            <a class="nav-link" href="help.html" target="_blank" rel="noopener noreferrer">帮助</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="doc.html" target="_blank" rel="noopener noreferrer">开发者文档</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                关于我们
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="https://github.com/ZSLTChenXiYin/CRMS">Github</a></li>
+                                <li><div class="dropdown-item">QQ交流群 123456789</div></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <button class="btn btn-link text-muted" disabled>关注浊水楼台喵，关注浊水楼台谢谢喵！</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="container error-container position-relative">
+                <div class="cloud-bg"></div>
+                <div class="error-content">
+                    <div class="error-mascot">(｡•́︿•̀｡)</div>
+                    <h1 class="error-title">哎呀，页面溜走了</h1>
+                    <h2 class="error-subtitle">它可能去散步了，或者躲起来睡午觉了</h2>
+                    <p class="lead text-muted">别担心，试试这些方法：</p>
+                    
+                    <div class="error-actions">
+                        <a href="index.html" class="btn btn-primary btn-lg px-4 me-3 btn-paw">
+                            回到温暖的首页
+                        </a>
+                        <a href="help.html" class="btn btn-outline-primary btn-lg px-4 btn-paw">
+                            问问小助手
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button class="btn btn-link text-muted" onclick="history.back()">
+                            <small>← 返回刚才的地方</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer-custom bg-light py-4 border-top mt-auto">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <h5 class="mb-3">云库</h5>
+                        <p class="mb-1">浊水楼台开源云资源管理系统</p>
+                        <p class="mb-0">© 2025 浊水楼台团队 版权所有</p>
+                    </div>
+                    <div class="col-md-3 mb-4 mb-md-0">
+                        <h5 class="mb-3">链接</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="index.html" class="text-decoration-none">首页</a></li>
+                            <li class="mb-2"><a href="help.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">帮助文档</a></li>
+                            <li class="mb-2"><a href="doc.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">开发者文档</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="mb-3">联系我们</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="https://github.com/ZSLTChenXiYin/CRMS" class="text-decoration-none">GitHub</a></li>
+                            <li class="mb-2">QQ交流群: 123456789</li>
+                            <li>邮箱: contact@example.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

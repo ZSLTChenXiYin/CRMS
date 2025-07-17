@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="assets/icon/zslt-official.ico" type="image/x-icon">
+        <title>云库 | 权限管理</title>
+        <link href="bootstrap-5.3.6/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+        <style>
+            /* 新增: 页面主体布局设置 */
+            html, body {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            body {
+                min-height: 100vh;
+            }
+            
+            main {
+                flex: 1;
+                padding-bottom: 2rem; /* 为页脚留出空间 */
+            }
+            
+            /* 原有样式保持不变 */
+            .navbar-logo-custom {
+                font-family: "SimSun", "宋体", serif;
+                font-weight: bold;
+            }
+            
+            .footer-custom {
+                font-family: "SimSun", "宋体", serif;
+                width: 100%;
+            }
+
+            .name-custom {
+                font-family: "SimSun", "宋体", serif;
+            }
+            
+            .asset-card {
+                transition: all 0.3s ease;
+                margin-bottom: 1rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            }
+            
+            .asset-card:hover {
+                transform: translateY(-0.25rem);
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            }
+            
+            .asset-section {
+                margin-bottom: 2rem;
+            }
+            
+            .section-title {
+                border-bottom: 1px solid #dee2e6;
+                padding-bottom: 0.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .nav-tabs .nav-link.active {
+                font-weight: bold;
+            }
+            
+            .empty-state {
+                text-align: center;
+                padding: 2rem;
+                color: #6c757d;
+            }
+
+            /* 操作结果提示 */
+            .position-fixed {
+                z-index: 11;
+            }
+
+            /* 添加以下CSS到您的样式部分 */
+            .order-lg-2 {
+                order: 2;
+            }
+
+            .order-lg-3 {
+                order: 3;
+            }
+
+            @media (max-width: 992px) {
+                #auth-section {
+                    margin-top: 1rem;
+                    width: 100%;
+                    justify-content: flex-end;
+                }
+                
+                .navbar-collapse {
+                    order: 4;
+                }
+            }
+
+            /* 响应式调整 - 增强 */
+            @media (max-width: 768px) {
+                .asset-actions {
+                    margin-top: 1rem;
+                }
+                
+                .asset-card {
+                    margin-bottom: 1.5rem;
+                }
+                
+                .card-body {
+                    padding: 1rem;
+                }
+                
+                .section-title {
+                    font-size: 1.25rem;
+                }
+                
+                /* 导航栏优化 */
+                .navbar-brand {
+                    font-size: 1rem;
+                }
+                
+                /* 页脚布局调整 */
+                .footer-custom .row > div {
+                    margin-bottom: 1.5rem;
+                }
+            }
+
+            @media (max-width: 576px) {
+                /* 更小屏幕的优化 */
+                .asset-card {
+                    margin-left: -0.75rem;
+                    margin-right: -0.75rem;
+                    border-radius: 0;
+                }
+                
+                /* 按钮组垂直排列 */
+                .asset-actions .btn-group {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+                
+                .asset-actions .btn {
+                    width: 100%;
+                }
+            }
+
+            .permission-badge {
+                font-size: 0.8rem;
+                padding: 0.35em 0.65em;
+            }
+
+            .permission-use {
+                background-color: #198754;
+                color: white;
+            }
+
+            .permission-execute {
+                background-color: #ffc107;
+                color: #212529;
+            }
+            
+            /* 模态框响应式优化 */
+            @media (max-width: 576px) {
+                .modal-dialog {
+                    margin: 0.5rem auto;
+                }
+            }
+        </style>
+    </head>
+    <body class="d-flex flex-column">
+        <!-- 修改导航栏部分，将auth-section移到navbar-brand同一层级 -->
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand navbar-logo-custom" href="index.html">
+                    <img src="assets/icon/zslt-official.ico" alt="Logo" width="24" height="24" class="d-inline-block align-text-top">
+                    云库
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <!-- 将auth-section放在这里，使用ms-auto使其靠右 -->
+                <div class="d-flex order-lg-3 ms-auto" id="auth-section">
+                    <!-- 这里的内容将由JavaScript动态生成 -->
+                </div>
+                
+                <div class="collapse navbar-collapse order-lg-2" id="navbarScroll">
+                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                        <li class="nav-item">
+                            <a class="nav-link" href="help.html" target="_blank" rel="noopener noreferrer">帮助</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="doc.html" target="_blank" rel="noopener noreferrer">开发者文档</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                关于我们
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="https://github.com/ZSLTChenXiYin/CRMS">Github</a></li>
+                                <li><div class="dropdown-item">QQ交流群 123456789</div></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <button class="btn btn-link text-muted" disabled>关注浊水楼台喵，关注浊水楼台谢谢喵！</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container my-4">
+            <h2 class="mb-4">权限管理</h2>
+            
+            <ul class="nav nav-tabs mb-4" id="assetTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="server-tab" data-bs-toggle="tab" data-bs-target="#server" type="button" role="tab" aria-controls="server" aria-selected="true">服务器</button>
+                </li>
+                <!-- 未来可以添加更多类型的资产标签 -->
+            </ul>
+            
+            <div class="tab-content" id="assetTabsContent">
+                <div class="tab-pane fade show active" id="server" role="tabpanel" aria-labelledby="server-tab">
+                    <div class="asset-section">
+                        <div id="sharedAssetsContainer">
+                            <!-- 共享资产权限将通过JavaScript动态加载 -->
+                            <div class="empty-state">
+                                <p>正在加载共享权限...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 修改权限模态框 -->
+        <div class="modal fade" id="editPermissionModal" tabindex="-1" aria-labelledby="editPermissionModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editPermissionModalLabel">修改权限</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editPermissionForm">
+                            <div class="mb-3">
+                                <label for="editPermission" class="form-label">权限类型</label>
+                                <select class="form-select" id="editPermission" required>
+                                    <option value="use">使用权限</option>
+                                    <option value="execute">执行权限</option>
+                                </select>
+                                <div class="form-text text-muted mt-1">
+                                    <strong>使用权限</strong>: 只能查看和使用资产<br>
+                                    <strong>执行权限</strong>: 可以修改资产信息
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="submitEditPermissionBtn">确认修改</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 删除确认模态框 -->
+        <div class="modal fade" id="deletePermissionModal" tabindex="-1" aria-labelledby="deletePermissionModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deletePermissionModalLabel">确认删除</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>警告</strong>: 此操作不可撤销！
+                        </div>
+                        <p>您确定要删除这个共享权限吗？删除后对方将无法访问该资产。</p>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmDeleteCheck">
+                            <label class="form-check-label" for="confirmDeleteCheck">
+                                我确认要删除此共享权限
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled>确认删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作结果提示 -->
+        <div class="position-fixed bottom-0 end-0 p-3">
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">系统提示</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" id="toastMessage">
+                    操作成功！
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer-custom bg-light py-4 border-top mt-auto">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <h5 class="mb-3">云库</h5>
+                        <p class="mb-1">浊水楼台开源云资源管理系统</p>
+                        <p class="mb-0">© 2025 浊水楼台团队 版权所有</p>
+                    </div>
+                    <div class="col-md-3 mb-4 mb-md-0">
+                        <h5 class="mb-3">链接</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="index.html" class="text-decoration-none">首页</a></li>
+                            <li class="mb-2"><a href="help.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">帮助文档</a></li>
+                            <li class="mb-2"><a href="doc.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">开发者文档</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="mb-3">联系我们</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="https://github.com/ZSLTChenXiYin/CRMS" class="text-decoration-none">GitHub</a></li>
+                            <li class="mb-2">QQ交流群: 123456789</li>
+                            <li>邮箱: contact@example.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
+        <script src="js-cookie-3.0.4/js.cookie.min.js"></script>
+        <script>
+            // 默认domain值
+            let api_domain = 'http://localhost:8080';
+
+            // 从源站拉取profile.json并更新domain
+            async function fetchDomainConfig() {
+                try {
+                    const response = await fetch('/profile.json');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch profile config');
+                    }
+                    const config = await response.json();
+                    if (config.api_domain) {
+                        api_domain = config.api_domain;
+                    }
+                } catch (error) {
+                    console.error('Error fetching profile config:', error);
+                    // 使用默认domain值
+                }
+            }
+
+            // 检查用户登录状态并更新UI
+            function checkAuthStatus() {
+                const authSection = document.getElementById('auth-section');
+                const userData = Cookies.get('user_data');
+                
+                if (userData) {
+                    try {
+                        const user = JSON.parse(userData);
+                        
+                        // 创建用户下拉菜单
+                        authSection.innerHTML = `
+                            <div class="dropdown">
+                                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="me-2">${user.email}</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="center.html">个人中心</a></li>
+                                    <li><a class="dropdown-item" href="asset.html">资产管理</a></li>
+                                    <li><a class="dropdown-item" href="reset-password.html">修改密码</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><button class="dropdown-item" onclick="logout()">退出登录</button></li>
+                                </ul>
+                            </div>
+                        `;
+                    } catch (e) {
+                        console.error('解析用户数据失败:', e);
+                        showLoginButton();
+                        // 清除无效的cookie
+                        Cookies.remove('user_data');
+                        Cookies.remove('auth_token');
+                    }
+                } else {
+                    showLoginButton();
+                    // 如果未登录，跳转到登录页面
+                    window.location.href = 'login.html';
+                }
+            }
+
+            function showLoginButton() {
+                const authSection = document.getElementById('auth-section');
+                authSection.innerHTML = `
+                    <div class="d-flex gap-2">
+                        <a href="login.html" class="btn btn-outline-primary">登录</a>
+                        <a href="register.html" class="btn btn-outline-secondary">注册</a>
+                    </div>
+                `;
+            }
+
+            // 退出登录函数
+            async function logout() {
+                const authToken = Cookies.get('auth_token');
+                
+                if (authToken) {
+                    try {
+                        // 调用注销接口
+                        const response = await fetch(api_domain + '/user/logout', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`
+                            }
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok) {
+                            console.log('注销成功:', result.message);
+                        } else {
+                            console.error('注销失败:', result.error || result.message);
+                        }
+                    } catch (error) {
+                        console.error('调用注销接口时出错:', error);
+                    }
+                }
+                
+                // 无论API调用是否成功，都清除本地token并更新UI
+                Cookies.remove('user_data', { path: '/' });
+                Cookies.remove('auth_token', { path: '/' });
+                
+                // 更新UI
+                checkAuthStatus();
+                
+                // 跳转到首页
+                window.location.href = 'index.html';
+            }
+
+            // 获取共享权限列表
+            async function fetchSharedPermissions() {
+                const authToken = Cookies.get('auth_token');
+                
+                if (!authToken) {
+                    console.error('未找到认证令牌');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(api_domain + '/asset/share', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        console.log('获取共享权限成功:', result.message);
+                        renderSharedPermissions(result.mappings);
+                    } else {
+                        console.error('获取共享权限失败:', result.error || result.message);
+                        showError('获取共享权限失败: ' + (result.error || result.message));
+                    }
+                } catch (error) {
+                    console.error('获取共享权限时出错:', error);
+                    showError('获取共享权限时出错: ' + error.message);
+                }
+            }
+            
+            // 渲染共享权限列表
+            function renderSharedPermissions(mappings) {
+                const container = document.getElementById('sharedAssetsContainer');
+                
+                if (mappings && mappings.length > 0) {
+                    container.innerHTML = '';
+                    
+                    // 按资产类型分组
+                    const groupedByType = {};
+                    mappings.forEach(mapping => {
+                        if (!groupedByType[mapping.asset_type]) {
+                            groupedByType[mapping.asset_type] = [];
+                        }
+                        groupedByType[mapping.asset_type].push(mapping);
+                    });
+                    
+                    // 渲染每种类型的权限
+                    Object.entries(groupedByType).forEach(([type, typeMappings]) => {
+                        const section = document.createElement('div');
+                        section.className = 'asset-section';
+                        
+                        const title = document.createElement('h4');
+                        title.className = 'section-title';
+                        title.textContent = type === 'server' ? '服务器权限' : type;
+                        
+                        section.appendChild(title);
+                        
+                        typeMappings.forEach(mapping => {
+                            section.appendChild(createPermissionCard(mapping));
+                        });
+                        
+                        container.appendChild(section);
+                    });
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <p>您还没有分享任何资产权限</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // 创建权限卡片
+            function createPermissionCard(mapping) {
+                const card = document.createElement('div');
+                card.className = 'card asset-card';
+                
+                const cardBody = document.createElement('div');
+                cardBody.className = 'card-body';
+                
+                const row = document.createElement('div');
+                row.className = 'row';
+                
+                // 权限信息列
+                const infoCol = document.createElement('div');
+                infoCol.className = 'col-md-8';
+                
+                const nameHeading = document.createElement('h5');
+                nameHeading.className = 'd-inline-block me-3';
+                nameHeading.textContent = mapping.asset_name || '未命名资产';
+                
+                const permissionBadge = document.createElement('span');
+                permissionBadge.className = `badge permission-badge ${mapping.permission === 'use' ? 'permission-use' : 'permission-execute'}`;
+                permissionBadge.textContent = mapping.permission === 'use' ? '使用权限' : '执行权限';
+                
+                const userDiv = document.createElement('div');
+                userDiv.className = 'text-muted small mt-2';
+                userDiv.innerHTML = `<strong>共享给:</strong> ${mapping.user_email}`;
+                
+                const createdAtDiv = document.createElement('div');
+                createdAtDiv.className = 'text-muted small';
+                createdAtDiv.innerHTML = `<strong>创建时间:</strong> ${new Date(mapping.create_at).toLocaleString()}`;
+                
+                infoCol.appendChild(nameHeading);
+                infoCol.appendChild(permissionBadge);
+                infoCol.appendChild(userDiv);
+                infoCol.appendChild(createdAtDiv);
+                
+                // 操作按钮列
+                const actionsCol = document.createElement('div');
+                actionsCol.className = 'col-md-4 asset-actions';
+                
+                const btnGroup = document.createElement('div');
+                btnGroup.className = 'float-md-end mt-3 mt-md-0';
+                
+                // 修改按钮
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn btn-sm btn-outline-secondary me-2';
+                editBtn.innerHTML = '<i class="bi bi-pencil"></i> 修改';
+                editBtn.addEventListener('click', () => {
+                    editPermission(mapping);
+                });
+                
+                // 删除按钮
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn btn-sm btn-outline-danger';
+                deleteBtn.innerHTML = '<i class="bi bi-trash"></i> 删除';
+                deleteBtn.addEventListener('click', () => {
+                    showDeleteConfirmation(mapping);
+                });
+                
+                btnGroup.appendChild(editBtn);
+                btnGroup.appendChild(deleteBtn);
+                actionsCol.appendChild(btnGroup);
+                
+                row.appendChild(infoCol);
+                row.appendChild(actionsCol);
+                cardBody.appendChild(row);
+                card.appendChild(cardBody);
+                
+                return card;
+            }
+            
+            // 编辑权限
+            function editPermission(mapping) {
+                const modal = document.getElementById('editPermissionModal');
+                modal.dataset.mappingId = mapping.id;
+                modal.dataset.userId = mapping.user_id;
+                modal.dataset.assetId = mapping.asset_id;
+                
+                // 设置当前权限
+                document.getElementById('editPermission').value = mapping.permission;
+                
+                // 显示模态框
+                const modalInstance = new bootstrap.Modal(modal);
+                modalInstance.show();
+            }
+            
+            // 提交权限修改
+            async function submitPermissionEdit() {
+                const authToken = Cookies.get('auth_token');
+                const modal = document.getElementById('editPermissionModal');
+                const mappingId = modal.dataset.mappingId;
+                const userId = modal.dataset.userId;
+                const assetId = modal.dataset.assetId;
+                
+                if (!authToken || !mappingId || !userId || !assetId) {
+                    showToast('操作失败: 缺少必要参数', 'danger');
+                    return;
+                }
+                
+                const permission = document.getElementById('editPermission').value;
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('user_id', userId);
+                    formData.append('asset_id', assetId);
+                    formData.append('permission', permission);
+                    
+                    const response = await fetch(api_domain + '/asset/share', {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        showToast('权限修改成功', 'success');
+                        // 关闭模态框
+                        const modalInstance = bootstrap.Modal.getInstance(modal);
+                        modalInstance.hide();
+                        // 刷新权限列表
+                        fetchSharedPermissions();
+                    } else {
+                        showToast('权限修改失败: ' + (result.error || result.message), 'danger');
+                    }
+                } catch (error) {
+                    console.error('修改权限时出错:', error);
+                    showToast('修改权限时出错: ' + error.message, 'danger');
+                }
+            }
+            
+            // 显示删除确认模态框
+            function showDeleteConfirmation(mapping) {
+                const modal = document.getElementById('deletePermissionModal');
+                modal.dataset.mappingId = mapping.id;
+                modal.dataset.userId = mapping.user_id;
+                modal.dataset.assetId = mapping.asset_id;
+                
+                // 重置确认复选框
+                document.getElementById('confirmDeleteCheck').checked = false;
+                document.getElementById('confirmDeleteBtn').disabled = true;
+                
+                // 显示模态框
+                const modalInstance = new bootstrap.Modal(modal);
+                modalInstance.show();
+            }
+            
+            // 实际执行删除操作
+            async function performDeletePermission() {
+                const authToken = Cookies.get('auth_token');
+                const modal = document.getElementById('deletePermissionModal');
+                const userId = modal.dataset.userId;
+                const assetId = modal.dataset.assetId;
+                
+                if (!authToken || !userId || !assetId) {
+                    showToast('操作失败: 缺少必要参数', 'danger');
+                    return;
+                }
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('user_id', userId);
+                    formData.append('asset_id', assetId);
+                    
+                    const response = await fetch(api_domain + '/asset/share', {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        showToast('权限删除成功', 'success');
+                        // 关闭模态框
+                        const modalInstance = bootstrap.Modal.getInstance(modal);
+                        modalInstance.hide();
+                        // 刷新权限列表
+                        fetchSharedPermissions();
+                    } else {
+                        showToast('权限删除失败: ' + (result.error || result.message), 'danger');
+                    }
+                } catch (error) {
+                    console.error('删除权限时出错:', error);
+                    showToast('删除权限时出错: ' + error.message, 'danger');
+                }
+            }
+            
+            // 显示错误信息
+            function showError(message) {
+                const container = document.getElementById('sharedAssetsContainer');
+                container.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        ${message}
+                    </div>
+                `;
+            }
+            
+            // 显示Toast提示
+            function showToast(message, type = 'success') {
+                const toastEl = document.getElementById('liveToast');
+                const toastBody = document.getElementById('toastMessage');
+                
+                // 设置Toast样式和内容
+                toastBody.textContent = message;
+                toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning');
+                
+                switch (type) {
+                    case 'success':
+                        toastEl.classList.add('bg-success', 'text-white');
+                        break;
+                    case 'danger':
+                        toastEl.classList.add('bg-danger', 'text-white');
+                        break;
+                    case 'warning':
+                        toastEl.classList.add('bg-warning', 'text-dark');
+                        break;
+                }
+                
+                // 显示Toast
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            }
+            
+            // 页面加载时初始化
+            document.addEventListener('DOMContentLoaded', async function() {
+                await fetchDomainConfig();
+                checkAuthStatus();
+                fetchSharedPermissions();
+                
+                // 添加事件监听器
+                document.getElementById('submitEditPermissionBtn').addEventListener('click', submitPermissionEdit);
+                document.getElementById('confirmDeleteBtn').addEventListener('click', performDeletePermission);
+                
+                // 删除确认复选框事件
+                document.getElementById('confirmDeleteCheck').addEventListener('change', function() {
+                    document.getElementById('confirmDeleteBtn').disabled = !this.checked;
+                });
+            });
+        </script>
+    </body>
+</html>

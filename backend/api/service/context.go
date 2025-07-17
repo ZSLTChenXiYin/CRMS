@@ -35,8 +35,8 @@ func AnalyzeToken(c *gin.Context) (user_token *UserToken, err error) {
 
 	// 获取令牌信息
 	user_token = &UserToken{
-		UserID: (*claims)["user_id"].(uint),
-		Expire: (*claims)["expire"].(int64),
+		UserID: uint((*claims)["user_id"].(float64)),
+		Expire: int64((*claims)["expire"].(float64)),
 	}
 
 	return user_token, nil

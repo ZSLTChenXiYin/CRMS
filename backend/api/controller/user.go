@@ -33,6 +33,7 @@ func PostRegister(c *gin.Context) {
 			"message": "注册失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -41,13 +42,15 @@ func PostRegister(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "邮箱已存在",
+				"message": "注册失败",
+				"error":   "邮箱已存在",
 			})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "注册失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 		}
 		return
 	}
@@ -82,6 +85,7 @@ func GetUserInfo(c *gin.Context) {
 			"message": "查询用户个人信息失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -92,6 +96,7 @@ func GetUserInfo(c *gin.Context) {
 			"message": "查询用户个人信息失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -134,13 +139,15 @@ func PostLogin(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "用户不存在",
+				"message": "登录失败",
+				"error":   "用户不存在",
 			})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "登录失败",
 				"error":   err.Error(),
 			})
+			log.Panicln("[ERROR]", err)
 		}
 		return
 	}
@@ -149,7 +156,8 @@ func PostLogin(c *gin.Context) {
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "密码错误",
+			"message": "登录失败",
+			"error":   "密码错误",
 		})
 		return
 	}
@@ -165,6 +173,7 @@ func PostLogin(c *gin.Context) {
 			"message": "登录失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -175,17 +184,21 @@ func PostLogin(c *gin.Context) {
 			"message": "登录失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
 	// 更新用户过期时间
-	err = user_service.UpdateUserExpiredById(user.ID, time.Now())
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "登录失败",
-			"error":   err.Error(),
-		})
-		return
+	if user.ExpiredAt.Before(time.Now()) {
+		err = user_service.UpdateUserExpiredById(user.ID, time.Now())
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "登录失败",
+				"error":   err.Error(),
+			})
+			log.Panicln("[ERROR]", err)
+			return
+		}
 	}
 
 	// 返回登录成功信息
@@ -209,6 +222,7 @@ func PostLogout(c *gin.Context) {
 			"message": "注销失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -219,6 +233,7 @@ func PostLogout(c *gin.Context) {
 			"message": "注销失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -246,6 +261,7 @@ func PutResetPassword(c *gin.Context) {
 			"message": "修改用户个人密码失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -262,6 +278,7 @@ func PutResetPassword(c *gin.Context) {
 			"message": "修改用户个人密码失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -269,8 +286,10 @@ func PutResetPassword(c *gin.Context) {
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(old_password))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "旧密码错误",
+			"message": "修改用户个人密码失败",
+			"error":   "旧密码错误",
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -281,6 +300,7 @@ func PutResetPassword(c *gin.Context) {
 			"message": "修改用户个人密码失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -291,6 +311,7 @@ func PutResetPassword(c *gin.Context) {
 			"message": "修改用户个人密码失败",
 			"error":   err.Error(),
 		})
+		log.Panicln("[ERROR]", err)
 		return
 	}
 
@@ -311,21 +332,21 @@ func PutResetPassword(c *gin.Context) {
 
 		additional_infomation_json, err := json.Marshal(additional_information)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 		} else {
 			operation_log.AdditionalInformation = additional_infomation_json
 		}
 
 		err = service.NewOperationLogService(com.Database).CreateOperationLog(operation_log)
 		if err != nil {
-			log.Println("操作日志记录错误:", err)
+			log.Println("[操作日志记录错误]", err)
 
 			json_data, err := json.Marshal(operation_log)
 			if err != nil {
-				log.Println("操作日志记录错误:", err)
+				log.Println("[操作日志记录错误]", err)
 			}
 
-			log.Println("操作日志记录:", string(json_data))
+			log.Println("[操作日志备份]", string(json_data))
 			return
 		}
 	}()

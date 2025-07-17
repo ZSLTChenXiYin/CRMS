@@ -59,8 +59,8 @@ func (s *UserService) UpdateUserPasswordHashById(id uint, password_hash string) 
 	return s.db.Model(&User{}).Where("id = ?", id).Update("password_hash", password_hash).Error
 }
 
-func (s *UserService) UpdateUserExpiredById(id uint, expired time.Time) error {
-	return s.db.Model(&User{}).Where("id = ?", id).Update("expired", expired).Error
+func (s *UserService) UpdateUserExpiredById(id uint, expired_at time.Time) error {
+	return s.db.Model(&User{}).Where("id = ?", id).Update("expired_at", expired_at).Error
 }
 
 func (s *UserService) UpdateUserLastLoginById(id uint) error {

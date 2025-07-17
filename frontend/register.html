@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="assets/icon/zslt-official.ico" type="image/x-icon">
+        <title>云库 | 注册</title>
+        <link href="bootstrap-5.3.6/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            /* 优化后的样式 */
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .navbar-logo-custom {
+                font-family: "SimSun", "宋体", serif;
+                font-weight: bold;
+            }
+            
+            .footer-custom {
+                font-family: "SimSun", "宋体", serif;
+                margin-top: auto; /* 确保页尾始终在底部 */
+            }
+
+            main.container {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .register-container {
+                max-width: 500px;
+                width: 100%;
+                margin: 2rem auto;
+                padding: 2rem;
+                background: white;
+                border-radius: 0.75rem;
+                box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
+                border: 1px solid rgba(0, 0, 0, 0.05);
+            }
+            
+            .register-title {
+                font-family: "SimSun", "宋体", serif;
+                text-align: center;
+                margin-bottom: 1.5rem;
+                color: #333;
+                font-size: 1.75rem;
+                font-weight: 600;
+            }
+            
+            .form-floating label {
+                padding: 0.8rem 1.5rem;
+                color: #6c757d;
+            }
+            
+            .form-floating input {
+                height: calc(3.25rem + 2px);
+                padding: 1rem 1.5rem;
+                border-radius: 0.5rem;
+                border: 1px solid #ced4da;
+                transition: all 0.2s ease;
+            }
+            
+            .form-floating input:focus {
+                border-color: #86b7fe;
+                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+            }
+            
+            .register-btn {
+                width: 100%;
+                padding: 0.75rem;
+                font-weight: 600;
+                border-radius: 0.5rem;
+                transition: all 0.2s ease;
+            }
+            
+            .btn-primary {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+            }
+            
+            .btn-primary:hover {
+                background-color: #0b5ed7;
+                border-color: #0a58ca;
+                transform: translateY(-1px);
+            }
+            
+            .btn-outline-primary {
+                color: #0d6efd;
+                border-color: #0d6efd;
+            }
+            
+            .btn-outline-primary:hover {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+                transform: translateY(-1px);
+            }
+            
+            .register-links {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 1rem;
+            }
+            
+            .register-divider {
+                position: relative;
+                margin: 1.5rem 0;
+                text-align: center;
+                color: #6c757d;
+            }
+            
+            .register-divider::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background-color: #dee2e6;
+                z-index: -1;
+            }
+            
+            .register-divider-text {
+                display: inline-block;
+                padding: 0 1rem;
+                background-color: white;
+            }
+            
+            .password-strength {
+                height: 4px;
+                background-color: #e9ecef;
+                margin-top: 0.5rem;
+                border-radius: 2px;
+                overflow: hidden;
+            }
+            
+            .password-strength-bar {
+                height: 100%;
+                width: 0;
+                transition: width 0.3s ease;
+            }
+            
+            .spinner-border {
+                width: 1.2rem;
+                height: 1.2rem;
+                border-width: 0.15em;
+                display: none;
+                vertical-align: text-top;
+            }
+            
+            /* 响应式调整 */
+            @media (max-width: 768px) {
+                .register-container {
+                    padding: 1.5rem;
+                    margin: 1.5rem auto;
+                }
+                
+                .register-title {
+                    font-size: 1.5rem;
+                    margin-bottom: 1.25rem;
+                }
+                
+                .form-floating input {
+                    height: calc(3rem + 2px);
+                    padding: 0.8rem 1.25rem;
+                }
+                
+                .form-floating label {
+                    padding: 0.7rem 1.25rem;
+                }
+            }
+            
+            @media (max-width: 576px) {
+                .register-container {
+                    padding: 1.25rem;
+                    margin: 1rem auto;
+                    box-shadow: none;
+                    border: none;
+                }
+                
+                .register-title {
+                    font-size: 1.4rem;
+                }
+                
+                .register-links {
+                    flex-direction: column;
+                    gap: 0.75rem;
+                }
+                
+                .footer-custom .container {
+                    padding: 0 15px;
+                }
+                
+                .footer-custom .row > div {
+                    margin-bottom: 1rem;
+                }
+            }
+            
+            @media (max-width: 400px) {
+                .register-container {
+                    padding: 1rem;
+                }
+                
+                .form-floating input {
+                    height: calc(2.75rem + 2px);
+                    padding: 0.7rem 1rem;
+                }
+                
+                .form-floating label {
+                    padding: 0.6rem 1rem;
+                    font-size: 0.9rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 保持原有导航栏内容不变 -->
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand navbar-logo-custom" href="index.html">
+                    <img src="assets/icon/zslt-official.ico" alt="Logo" width="24" height="24" class="d-inline-block align-text-top">
+                    云库
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarScroll">
+                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                        <li class="nav-item">
+                            <a class="nav-link" href="help.html" target="_blank" rel="noopener noreferrer">帮助</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="doc.html" target="_blank" rel="noopener noreferrer">开发者文档</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                关于我们
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="https://github.com/ZSLTChenXiYin/CRMS">Github</a></li>
+                                <li><div class="dropdown-item">QQ交流群 123456789</div></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <button class="btn btn-link text-muted" disabled>关注浊水楼台喵，关注浊水楼台谢谢喵！</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 保持原有主内容区不变 -->
+        <main class="container">
+            <div class="register-container">
+                <h2 class="register-title">注册云库账号</h2>
+                
+                <form id="registerForm" class="needs-validation" novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" required>
+                        <label for="floatingEmail">邮箱地址</label>
+                        <div class="invalid-feedback">
+                            请输入有效的邮箱地址
+                        </div>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required minlength="8">
+                        <label for="floatingPassword">密码</label>
+                        <div class="invalid-feedback">
+                            请输入至少8个字符的密码
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                        </div>
+                        <small class="text-muted">至少8个字符，包含字母和数字</small>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password" required>
+                        <label for="floatingConfirmPassword">确认密码</label>
+                        <div class="invalid-feedback">
+                            密码不匹配
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-danger d-none" id="errorAlert" role="alert"></div>
+                    <div class="alert alert-success d-none" id="successAlert" role="alert"></div>
+                    
+                    <button class="btn btn-primary register-btn mb-3" type="submit" id="submitBtn">
+                        <span id="submitText">注册</span>
+                        <span class="spinner-border spinner-border-sm" id="submitSpinner" role="status" aria-hidden="true"></span>
+                    </button>
+                    
+                    <div class="register-divider">
+                        <span class="register-divider-text">已有账号？</span>
+                    </div>
+                    
+                    <div class="register-links">
+                        <a href="login.html" class="btn btn-outline-primary register-btn">登录现有账号</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- 保持原有页脚内容不变 -->
+        <footer class="footer-custom bg-light py-4 border-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <h5 class="mb-3">云库</h5>
+                        <p class="mb-1">浊水楼台开源云资源管理系统</p>
+                        <p class="mb-0">© 2025 浊水楼台团队 版权所有</p>
+                    </div>
+                    <div class="col-md-3 mb-4 mb-md-0">
+                        <h5 class="mb-3">链接</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="index.html" class="text-decoration-none">首页</a></li>
+                            <li class="mb-2"><a href="help.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">帮助文档</a></li>
+                            <li class="mb-2"><a href="doc.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">开发者文档</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="mb-3">联系我们</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="https://github.com/ZSLTChenXiYin/CRMS" class="text-decoration-none">GitHub</a></li>
+                            <li class="mb-2">QQ交流群: 123456789</li>
+                            <li>邮箱: contact@example.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
+        <script src="js-cookie-3.0.4/js.cookie.min.js"></script>
+        <script>
+            // 默认domain值
+            let api_domain = 'http://localhost:8080';
+
+            // 从源站拉取profile.json并更新domain
+            async function fetchDomainConfig() {
+                try {
+                    const response = await fetch('/profile.json');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch profile config');
+                    }
+                    const config = await response.json();
+                    if (config.api_domain) {
+                        api_domain = config.api_domain;
+                    }
+                } catch (error) {
+                    console.error('Error fetching profile config:', error);
+                    // 使用默认domain值
+                }
+            }
+
+            // 在页面加载时获取配置
+            document.addEventListener('DOMContentLoaded', async function() {
+                await fetchDomainConfig();
+                
+                // 检查是否已登录
+                const authToken = Cookies.get('auth_token');
+                if (authToken) {
+                    window.location.href = 'index.html';
+                }
+            });
+
+            // 表单验证和注册逻辑
+            (function() {
+                'use strict';
+                
+                const registerForm = document.getElementById('registerForm');
+                const emailInput = document.getElementById('floatingEmail');
+                const passwordInput = document.getElementById('floatingPassword');
+                const confirmPasswordInput = document.getElementById('floatingConfirmPassword');
+                const submitBtn = document.getElementById('submitBtn');
+                const submitText = document.getElementById('submitText');
+                const submitSpinner = document.getElementById('submitSpinner');
+                const errorAlert = document.getElementById('errorAlert');
+                const successAlert = document.getElementById('successAlert');
+                
+                passwordInput.addEventListener('input', function() {
+                    var password = this.value;
+                    var strengthBar = document.getElementById('passwordStrengthBar');
+                    var strength = 0;
+                    
+                    if (password.length >= 8) strength += 1;
+                    if (password.match(/[a-z]/)) strength += 1;
+                    if (password.match(/[A-Z]/)) strength += 1;
+                    if (password.match(/[0-9]/)) strength += 1;
+                    if (password.match(/[^a-zA-Z0-9]/)) strength += 1;
+                    
+                    var width = (strength / 5) * 100;
+                    strengthBar.style.width = width + '%';
+                    
+                    if (strength <= 1) {
+                        strengthBar.style.backgroundColor = '#dc3545';
+                    } else if (strength <= 3) {
+                        strengthBar.style.backgroundColor = '#ffc107';
+                    } else {
+                        strengthBar.style.backgroundColor = '#28a745';
+                    }
+                });
+                
+                confirmPasswordInput.addEventListener('input', function() {
+                    var password = passwordInput.value;
+                    var confirmPassword = this.value;
+                    
+                    if (password !== confirmPassword) {
+                        this.setCustomValidity('密码不匹配');
+                    } else {
+                        this.setCustomValidity('');
+                    }
+                });
+                
+                registerForm.addEventListener('submit', async function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
+                    if (!registerForm.checkValidity()) {
+                        registerForm.classList.add('was-validated');
+                        return;
+                    }
+                    
+                    submitText.textContent = '注册中...';
+                    submitSpinner.style.display = 'inline-block';
+                    submitBtn.disabled = true;
+                    
+                    errorAlert.classList.add('d-none');
+                    successAlert.classList.add('d-none');
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('email', emailInput.value);
+                        formData.append('password', passwordInput.value);
+                        
+                        const response = await fetch(api_domain + '/user/register', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok && result.message === '注册成功') {
+                            successAlert.textContent = '注册成功！即将跳转到登录页面...';
+                            successAlert.classList.remove('d-none');
+                            
+                            setTimeout(() => {
+                                window.location.href = 'login.html';
+                            }, 3000);
+                        } else {
+                            Cookies.remove('auth_token');
+                            Cookies.remove('user_email');
+                            
+                            errorAlert.textContent = result.error || '注册失败，请稍后再试';
+                            errorAlert.classList.remove('d-none');
+                        }
+                    } catch (error) {
+                        console.error('注册错误:', error);
+                        Cookies.remove('auth_token');
+                        Cookies.remove('user_email');
+                        
+                        errorAlert.textContent = '网络错误，请检查您的连接';
+                        errorAlert.classList.remove('d-none');
+                    } finally {
+                        submitText.textContent = '注册';
+                        submitSpinner.style.display = 'none';
+                        submitBtn.disabled = false;
+                    }
+                });
+            })();
+        </script>
+    </body>
+</html>

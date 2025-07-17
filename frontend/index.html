@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="assets/icon/zslt-official.ico" type="image/x-icon">
+        <title>云库 | 首页</title>
+        <link href="bootstrap-5.3.6/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            /* 全局样式优化 */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            
+            main {
+                flex: 1;
+                padding-bottom: 2rem;
+            }
+            
+            /* 导航栏样式 */
+            .navbar-logo-custom {
+                font-family: "SimSun", "宋体", serif;
+                font-weight: bold;
+            }
+            
+            /* 页脚样式优化 */
+            .footer-custom {
+                font-family: "SimSun", "宋体", serif;
+                width: 100%;
+            }
+
+            .name-custom {
+                font-family: "SimSun", "宋体", serif;
+            }
+            
+            /* 英雄区域优化 */
+            .hero-section {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-radius: 0.5rem;
+                padding: 3rem 1rem;
+                margin: 2rem 0;
+            }
+            
+            /* 特性卡片优化 */
+            .feature-card {
+                transition: transform 0.2s ease;
+                height: 100%;
+                border: none;
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            }
+            
+            .feature-card:hover {
+                transform: translateY(-0.25rem);
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            }
+
+            /* 统计项优化 */
+            .stat-item {
+                transition: all 0.3s ease;
+            }
+
+            .stat-item:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            }
+
+            /* 添加以下CSS到您的样式部分 */
+            .order-lg-2 {
+                order: 2;
+            }
+
+            .order-lg-3 {
+                order: 3;
+            }
+
+            @media (max-width: 992px) {
+                #auth-section {
+                    margin-top: 1rem;
+                    width: 100%;
+                    justify-content: flex-end;
+                }
+                
+                .navbar-collapse {
+                    order: 4;
+                }
+            }
+
+            /* 响应式布局优化 */
+            @media (max-width: 992px) {
+                .hero-section {
+                    text-align: center;
+                    padding: 2.5rem 1rem;
+                }
+                
+                .hero-buttons {
+                    justify-content: center;
+                }
+                
+                .stat-item {
+                    margin-bottom: 1rem;
+                }
+            }
+            
+            @media (max-width: 768px) {
+                .hero-section {
+                    padding: 2rem 1rem;
+                }
+                
+                .feature-card {
+                    margin-bottom: 1rem;
+                }
+                
+                .footer-custom .row > div {
+                    margin-bottom: 1.5rem;
+                }
+            }
+            
+            @media (max-width: 576px) {
+                .hero-section {
+                    padding: 1.5rem 0.5rem;
+                }
+                
+                .display-4 {
+                    font-size: 2.5rem;
+                }
+                
+                .lead {
+                    font-size: 1.1rem;
+                }
+                
+                .btn-lg {
+                    padding: 0.5rem 1rem;
+                    font-size: 1rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 修改导航栏部分，将auth-section移到navbar-brand同一层级 -->
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand navbar-logo-custom" href="index.html">
+                    <img src="assets/icon/zslt-official.ico" alt="Logo" width="24" height="24" class="d-inline-block align-text-top">
+                    云库
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <!-- 将auth-section放在这里，使用ms-auto使其靠右 -->
+                <div class="d-flex order-lg-3 ms-auto" id="auth-section">
+                    <!-- 这里的内容将由JavaScript动态生成 -->
+                </div>
+                
+                <div class="collapse navbar-collapse order-lg-2" id="navbarScroll">
+                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                        <li class="nav-item">
+                            <a class="nav-link" href="help.html" target="_blank" rel="noopener noreferrer">帮助</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="doc.html" target="_blank" rel="noopener noreferrer">开发者文档</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                关于我们
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="https://github.com/ZSLTChenXiYin/CRMS">Github</a></li>
+                                <li><div class="dropdown-item">QQ交流群 123456789</div></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <button class="btn btn-link text-muted" disabled>关注浊水楼台喵，关注浊水楼台谢谢喵！</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container my-4">
+            <section class="hero-section">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="display-4 fw-bold mb-3 name-custom">云库</h1>
+                        <p class="lead mb-4">高效、安全、易用的开源云端资源管理解决方案，为您的项目提供强大的资源支持。</p>
+                        <div class="d-flex gap-3 hero-buttons">
+                            <a href="#" id="useNowBtn" class="btn btn-primary btn-lg px-4">立即使用</a>
+                            <a href="doc.html" class="btn btn-outline-secondary btn-lg px-4">开发文档</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mt-4 mt-lg-0">
+                        <div class="bg-light p-4 rounded-3 text-center border-start border-5 border-primary" style="min-height: 200px; display: flex; flex-direction: column; justify-content: center;">
+                            <div>
+                                <h3 class="text-primary mb-3">
+                                    <span class="badge bg-primary me-2">云库 v1.0</span>
+                                </h3>
+                                <p class="mb-0 text-muted">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    最新稳定版本已发布
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="my-5 py-3">
+                <h2 class="text-center mb-4">核心特性</h2>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card feature-card p-4 h-100">
+                            <div class="card-body">
+                                <h3 class="card-title h5">资源统计</h3>
+                                <p class="card-text">实时监控资源操作情况，提供详细的数据分析，帮助您更好地追溯资源变动。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card feature-card p-4 h-100">
+                            <div class="card-body">
+                                <h3 class="card-title h5">安全可靠</h3>
+                                <p class="card-text">采用先进的加密技术和权限管理机制，确保您的资源数据安全无虞。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card feature-card p-4 h-100">
+                            <div class="card-body">
+                                <h3 class="card-title h5">高效性能</h3>
+                                <p class="card-text">优化的系统架构和高效的资源调度算法，为您提供流畅的使用体验。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="my-5 py-4">
+                <div class="row text-center g-4">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-item p-3 bg-white rounded-3 shadow-sm">
+                            <div class="stat-number display-6 text-primary fw-bold">100%</div>
+                            <div class="stat-label text-muted">开源</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-item p-3 bg-white rounded-3 shadow-sm">
+                            <div class="stat-number display-6 text-success fw-bold">24/7</div>
+                            <div class="stat-label text-muted">稳定运行</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-item p-3 bg-white rounded-3 shadow-sm">
+                            <div class="stat-number display-6 text-info fw-bold">99.8%</div>
+                            <div class="stat-label text-muted">可用性</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-item p-3 bg-white rounded-3 shadow-sm">
+                            <div class="stat-number display-6 text-warning fw-bold">7ms</div>
+                            <div class="stat-label text-muted">快速响应</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer-custom bg-light py-4 border-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <h5 class="mb-3">云库</h5>
+                        <p class="mb-1">浊水楼台开源云资源管理系统</p>
+                        <p class="mb-0">© 2025 浊水楼台团队 版权所有</p>
+                    </div>
+                    <div class="col-md-3 mb-4 mb-md-0">
+                        <h5 class="mb-3">链接</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="index.html" class="text-decoration-none">首页</a></li>
+                            <li class="mb-2"><a href="help.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">帮助文档</a></li>
+                            <li class="mb-2"><a href="doc.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">开发者文档</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="mb-3">联系我们</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="https://github.com/ZSLTChenXiYin/CRMS" class="text-decoration-none">GitHub</a></li>
+                            <li class="mb-2">QQ交流群: 123456789</li>
+                            <li>邮箱: contact@example.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
+        <script src="js-cookie-3.0.4/js.cookie.min.js"></script>
+        <script>
+            // 默认domain值
+            let api_domain = 'http://localhost:8080';
+
+            // 从源站拉取profile.json并更新domain
+            async function fetchDomainConfig() {
+                try {
+                    const response = await fetch('/profile.json');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch profile config');
+                    }
+                    const config = await response.json();
+                    if (config.api_domain) {
+                        api_domain = config.api_domain;
+                    }
+                } catch (error) {
+                    console.error('Error fetching profile config:', error);
+                    // 使用默认domain值
+                }
+            }
+
+            // 检查用户登录状态并更新UI
+            function checkAuthStatus() {
+                const authSection = document.getElementById('auth-section');
+                const userData = Cookies.get('user_data');
+                
+                if (userData) {
+                    try {
+                        const user = JSON.parse(userData);
+                        
+                        // 创建用户下拉菜单
+                        authSection.innerHTML = `
+                            <div class="dropdown">
+                                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="me-2">${user.email}</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="center.html">个人中心</a></li>
+                                    <li><a class="dropdown-item" href="asset.html">资产管理</a></li>
+                                    <li><a class="dropdown-item" href="share.html">权限管理</a></li>
+                                    <li><a class="dropdown-item" href="reset-password.html">修改密码</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><button class="dropdown-item" onclick="logout()">退出登录</button></li>
+                                </ul>
+                            </div>
+                        `;
+                    } catch (e) {
+                        console.error('解析用户数据失败:', e);
+                        showLoginButton();
+                        // 清除无效的cookie
+                        Cookies.remove('user_data');
+                        Cookies.remove('auth_token');
+                    }
+                } else {
+                    showLoginButton();
+                }
+            }
+
+            function showLoginButton() {
+                const authSection = document.getElementById('auth-section');
+                authSection.innerHTML = `
+                    <div class="d-flex gap-2">
+                        <a href="login.html" class="btn btn-outline-primary">登录</a>
+                        <a href="register.html" class="btn btn-outline-secondary">注册</a>
+                    </div>
+                `;
+            }
+
+            // 退出登录函数
+            async function logout() {
+                const authToken = Cookies.get('auth_token');
+                
+                if (authToken) {
+                    try {
+                        // 调用注销接口
+                        const response = await fetch(api_domain + '/user/logout', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`
+                            }
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok) {
+                            console.log('注销成功:', result.message);
+                        } else {
+                            console.error('注销失败:', result.error || result.message);
+                        }
+                    } catch (error) {
+                        console.error('调用注销接口时出错:', error);
+                    }
+                }
+                
+                // 无论API调用是否成功，都清除本地token并更新UI
+                Cookies.remove('user_data', { path: '/' });
+                Cookies.remove('auth_token', { path: '/' });
+                
+                // 更新UI
+                checkAuthStatus();
+                
+                // 可选：跳转到首页
+                window.location.href = 'index.html';
+            }
+
+            // 处理"立即使用"按钮点击事件
+            function handleUseNowClick() {
+                const authToken = Cookies.get('auth_token');
+                if (authToken) {
+                    // 有token，跳转到asset.html
+                    window.location.href = 'asset.html';
+                } else {
+                    // 没有token，跳转到登录页面
+                    window.location.href = 'login.html';
+                }
+            }
+
+            // 页面加载时初始化
+            document.addEventListener('DOMContentLoaded', async function() {
+                await fetchDomainConfig();
+                checkAuthStatus();
+                
+                // 为"立即使用"按钮添加点击事件
+                const useNowBtn = document.getElementById('useNowBtn');
+                if (useNowBtn) {
+                    useNowBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        handleUseNowClick();
+                    });
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -69,9 +69,9 @@ type Server struct {
 	SSHUsername string `json:"ssh_username"`
 	SSHPassword string `json:"ssh_password"`
 
-	BTAddress  string `json:"bt_address"`
-	BTUsername string `json:"bt_username"`
-	BTPassword string `json:"bt_password"`
+	PanelAddress  string `json:"panel_address"`
+	PanelUsername string `json:"panel_username"`
+	PanelPassword string `json:"panel_password"`
 
 	Expire int64 `json:"expire"`
 }

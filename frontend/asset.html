@@ -1,0 +1,1591 @@
+<!doctype html>
+<html lang="cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="assets/icon/zslt-official.ico" type="image/x-icon">
+        <title>云库 | 资产管理</title>
+        <link href="bootstrap-5.3.6/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+        <style>
+            /* 新增的全局布局样式 */
+            html {
+                height: 100%;
+            }
+            
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh; /* 使用视口高度确保填充整个屏幕 */
+                margin: 0;
+            }
+            
+            main {
+                flex: 1 0 auto; /* 这将使主要内容区域填充剩余空间 */
+                padding-bottom: 2rem; /* 添加一些底部内边距 */
+            }
+            
+            /* 修改现有的footer样式 */
+            .footer-custom {
+                font-family: "SimSun", "宋体", serif;
+                background-color: #f8f9fa;
+                padding: 1rem 0;
+                margin-top: auto; /* 这将使footer自动推到底部 */
+                width: 100%;
+                flex-shrink: 0; /* 防止footer被压缩 */
+            }
+
+            /* 保留原有的样式 */
+            .navbar-logo-custom {
+                font-family: "SimSun", "宋体", serif;
+                font-weight: bold;
+            }
+
+            .name-custom {
+                font-family: "SimSun", "宋体", serif;
+            }
+            
+            .asset-card {
+                transition: all 0.3s ease;
+                margin-bottom: 1rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            }
+            
+            .asset-card:hover {
+                transform: translateY(-0.25rem);
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            }
+            
+            .asset-section {
+                margin-bottom: 2rem;
+            }
+            
+            .section-title {
+                border-bottom: 1px solid #dee2e6;
+                padding-bottom: 0.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .nav-tabs .nav-link.active {
+                font-weight: bold;
+            }
+            
+            .empty-state {
+                text-align: center;
+                padding: 2rem;
+                color: #6c757d;
+            }
+            
+            /* 模态框自定义样式 */
+            .asset-form-label {
+                font-weight: 500;
+            }
+            
+            .form-section {
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .form-section-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+                color: #495057;
+            }
+
+            /* 查看模式下的只读样式 */
+            .form-control[readonly] {
+                background-color: #f8f9fa;
+                border-color: #dee2e6;
+                cursor: not-allowed;
+            }
+
+            /* 密码输入框和切换按钮的容器 */
+            .password-input-group {
+                display: flex;
+                align-items: center;
+            }
+
+            .password-input-group input {
+                flex: 1;
+                margin-right: 0.5rem;
+            }
+
+            /* 面板地址输入框和链接按钮的容器 */
+            .panel-address-group {
+                display: flex;
+                align-items: center;
+            }
+
+            .panel-address-group input {
+                flex: 1;
+                margin-right: 0.5rem;
+            }
+
+            /* 新增的弹窗美化样式 */
+            .modal-content {
+                border-radius: 0.75rem;
+                border: none;
+                box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
+            }
+            
+            .modal-header {
+                background-color: #f8f9fa;
+                border-bottom: 1px solid #e9ecef;
+                padding: 1.25rem 1.5rem;
+                border-top-left-radius: 0.75rem;
+                border-top-right-radius: 0.75rem;
+            }
+            
+            .modal-title {
+                font-weight: 600;
+                color: #212529;
+            }
+            
+            .modal-body {
+                padding: 1.5rem;
+            }
+            
+            .modal-footer {
+                background-color: #f8f9fa;
+                border-top: 1px solid #e9ecef;
+                padding: 1rem 1.5rem;
+                border-bottom-left-radius: 0.75rem;
+                border-bottom-right-radius: 0.75rem;
+            }
+            
+            /* 表单分组样式增强 */
+            .form-section {
+                margin-bottom: 1.75rem;
+                padding-bottom: 1.25rem;
+                border-bottom: 1px solid #f1f3f5;
+            }
+            
+            .form-section-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 1.25rem;
+                color: #495057;
+                display: flex;
+                align-items: center;
+            }
+            
+            .form-section-title:before {
+                content: "";
+                display: inline-block;
+                width: 4px;
+                height: 16px;
+                background-color: #0d6efd;
+                margin-right: 0.75rem;
+                border-radius: 2px;
+            }
+            
+            /* 表单标签样式 */
+            .asset-form-label {
+                font-weight: 500;
+                color: #495057;
+                margin-bottom: 0.5rem;
+            }
+            
+            /* 输入框样式 */
+            .form-control {
+                border-radius: 0.375rem;
+                padding: 0.5rem 0.75rem;
+                border: 1px solid #dee2e6;
+                transition: all 0.2s ease;
+            }
+            
+            .form-control:focus {
+                border-color: #86b7fe;
+                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            }
+            
+            /* 只读输入框样式 */
+            .form-control[readonly] {
+                background-color: #f8f9fa;
+                border-color: #e9ecef;
+                color: #6c757d;
+            }
+            
+            /* 按钮样式 */
+            .btn {
+                border-radius: 0.375rem;
+                padding: 0.5rem 1rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+            
+            .btn-primary {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+            }
+            
+            .btn-primary:hover {
+                background-color: #0b5ed7;
+                border-color: #0a58ca;
+            }
+            
+            .btn-secondary {
+                background-color: #6c757d;
+                border-color: #6c757d;
+            }
+            
+            .btn-secondary:hover {
+                background-color: #5c636a;
+                border-color: #565e64;
+            }
+            
+            /* 密码输入组样式 */
+            .password-input-group {
+                position: relative;
+            }
+            
+            .password-toggle-btn {
+                position: absolute;
+                right: 10px;
+                top: 32px;
+                background: none;
+                border: none;
+                color: #6c757d;
+                cursor: pointer;
+            }
+            
+            /* 面板地址组样式 */
+            .panel-address-group {
+                position: relative;
+            }
+            
+            .panel-link-btn {
+                position: absolute;
+                right: 10px;
+                top: 32px;
+            }
+
+            /* 密码输入组样式优化 */
+            .password-field-group {
+                position: relative;
+                margin-bottom: 1rem;
+            }
+
+            .password-field-group .form-control {
+                padding-right: 40px; /* 为切换按钮留出空间 */
+            }
+
+            .password-toggle-btn {
+                position: absolute;
+                right: 10px;
+                top: 32px;
+                background: none;
+                border: none;
+                color: #6c757d;
+                cursor: pointer;
+                z-index: 5;
+            }
+
+            /* 面板地址组样式优化 */
+            .panel-address-group {
+                position: relative;
+            }
+
+            .panel-address-group .form-control {
+                padding-right: 120px; /* 为访问按钮留出空间 */
+            }
+
+            .panel-link-btn {
+                position: absolute;
+                right: 10px;
+                top: 32px;
+                z-index: 5;
+            }
+
+            /* 紧凑布局优化 */
+            .compact-form-group {
+                margin-bottom: 1rem;
+            }
+
+            .compact-form-group label {
+                display: block;
+                margin-bottom: 0.25rem;
+            }
+
+            /* 添加以下CSS到您的样式部分 */
+            .order-lg-2 {
+                order: 2;
+            }
+
+            .order-lg-3 {
+                order: 3;
+            }
+
+            @media (max-width: 992px) {
+                #auth-section {
+                    margin-top: 1rem;
+                    width: 100%;
+                    justify-content: flex-end;
+                }
+                
+                .navbar-collapse {
+                    order: 4;
+                }
+            }
+
+            /* 响应式调整 */
+            @media (max-width: 768px) {
+                .modal-dialog {
+                    margin: 0.5rem auto;
+                }
+                
+                .modal-content {
+                    border-radius: 0;
+                }
+                
+                .form-section {
+                    padding-bottom: 1rem;
+                    margin-bottom: 1.5rem;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .asset-actions {
+                    margin-top: 1rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 修改导航栏部分，将auth-section移到navbar-brand同一层级 -->
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand navbar-logo-custom" href="index.html">
+                    <img src="assets/icon/zslt-official.ico" alt="Logo" width="24" height="24" class="d-inline-block align-text-top">
+                    云库
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <!-- 将auth-section放在这里，使用ms-auto使其靠右 -->
+                <div class="d-flex order-lg-3 ms-auto" id="auth-section">
+                    <!-- 这里的内容将由JavaScript动态生成 -->
+                </div>
+                
+                <div class="collapse navbar-collapse order-lg-2" id="navbarScroll">
+                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                        <li class="nav-item">
+                            <a class="nav-link" href="help.html" target="_blank" rel="noopener noreferrer">帮助</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="doc.html" target="_blank" rel="noopener noreferrer">开发者文档</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                关于我们
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="https://github.com/ZSLTChenXiYin/CRMS">Github</a></li>
+                                <li><div class="dropdown-item">QQ交流群 123456789</div></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <button class="btn btn-link text-muted" disabled>关注浊水楼台喵，关注浊水楼台谢谢喵！</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container my-4">
+            <h2 class="mb-4">资产管理</h2>
+            
+            <ul class="nav nav-tabs mb-4" id="assetTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="server-tab" data-bs-toggle="tab" data-bs-target="#server" type="button" role="tab" aria-controls="server" aria-selected="true">服务器</button>
+                </li>
+                <!-- 未来可以添加更多类型的资产标签 -->
+            </ul>
+            
+            <div class="tab-content" id="assetTabsContent">
+                <div class="tab-pane fade show active" id="server" role="tabpanel" aria-labelledby="server-tab">
+                    <div class="asset-section">
+                        <h4 class="section-title">个人资产</h4>
+                        <div id="privateAssetsContainer">
+                            <!-- 个人资产将通过JavaScript动态加载 -->
+                            <div class="empty-state">
+                                <p>正在加载您的个人资产...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="asset-section">
+                        <h4 class="section-title">共享权限</h4>
+                        <div id="publicAssetsContainer">
+                            <!-- 共享资产将通过JavaScript动态加载 -->
+                            <div class="empty-state">
+                                <p>正在加载共享资产...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 添加资产按钮 -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <button class="btn btn-primary me-md-2" type="button" id="addAssetBtn">
+                    <i class="bi bi-plus-circle"></i> 添加资产
+                </button>
+            </div>
+        </main>
+
+        <!-- 添加资产的模态框 -->
+        <div class="modal fade" id="addAssetModal" tabindex="-1" aria-labelledby="addAssetModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addAssetModalLabel">添加服务器资产</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="assetForm">
+                            <div class="mb-4">
+                                <label for="assetName" class="form-label asset-form-label">资产名称</label>
+                                <input type="text" class="form-control" id="assetName" required>
+                                <div class="form-text text-muted mt-1">为您的资产设置一个易于识别的名称</div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h6 class="form-section-title">基本信息</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="instanceId" class="form-label asset-form-label">实例ID</label>
+                                        <input type="text" class="form-control" id="instanceId" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="instanceName" class="form-label asset-form-label">实例名称</label>
+                                        <input type="text" class="form-control" id="instanceName">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h6 class="form-section-title">硬件配置</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label for="cpuCores" class="form-label asset-form-label">CPU核心数</label>
+                                        <input type="number" class="form-control" id="cpuCores" min="1" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="memorySize" class="form-label asset-form-label">内存大小(GB)</label>
+                                        <input type="number" class="form-control" id="memorySize" min="1" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="diskSize" class="form-label asset-form-label">磁盘大小(GB)</label>
+                                        <input type="number" class="form-control" id="diskSize" min="1" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="bandwidth" class="form-label asset-form-label">带宽(Mbps)</label>
+                                        <input type="number" class="form-control" id="bandwidth" min="1" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h6 class="form-section-title">网络信息</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="ipv4Address" class="form-label asset-form-label">IPv4地址</label>
+                                        <input type="text" class="form-control" id="ipv4Address">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="ipv6Address" class="form-label asset-form-label">IPv6地址</label>
+                                        <input type="text" class="form-control" id="ipv6Address">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- SSH访问 -->
+                            <div class="form-section">
+                                <h6 class="form-section-title">SSH访问</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6 compact-form-group">
+                                        <label for="sshUsername" class="form-label asset-form-label">SSH用户名</label>
+                                        <input type="text" class="form-control" id="sshUsername">
+                                    </div>
+                                    <div class="col-md-6 compact-form-group password-field-group">
+                                        <label for="sshPassword" class="form-label asset-form-label">SSH密码</label>
+                                        <input type="password" class="form-control" id="sshPassword">
+                                        <button type="button" class="password-toggle-btn" data-target="sshPassword">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 控制面板 -->
+                            <div class="form-section">
+                                <h6 class="form-section-title">控制面板</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6 compact-form-group panel-address-group">
+                                        <label for="panelAddress" class="form-label asset-form-label">面板地址</label>
+                                        <input type="url" class="form-control" id="panelAddress">
+                                        <a href="#" class="btn btn-sm btn-outline-primary panel-link-btn" target="_blank" id="panelLinkBtn" style="display: none;">
+                                            <i class="bi bi-box-arrow-up-right"></i> 访问
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 compact-form-group">
+                                        <label for="panelUsername" class="form-label asset-form-label">面板用户名</label>
+                                        <input type="text" class="form-control" id="panelUsername">
+                                    </div>
+                                    <div class="col-md-3 compact-form-group password-field-group">
+                                        <label for="panelPassword" class="form-label asset-form-label">面板密码</label>
+                                        <input type="password" class="form-control" id="panelPassword">
+                                        <button type="button" class="password-toggle-btn" data-target="panelPassword">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="expireDate" class="form-label asset-form-label">到期时间</label>
+                                <input type="date" class="form-control" id="expireDate">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="submitAssetBtn">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分享资产模态框 -->
+        <div class="modal fade" id="shareAssetModal" tabindex="-1" aria-labelledby="shareAssetModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="shareAssetModalLabel">分享资产</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="shareAssetForm">
+                            <div class="mb-3">
+                                <label for="shareEmail" class="form-label asset-form-label">用户邮箱</label>
+                                <input type="email" class="form-control" id="shareEmail" required>
+                                <div class="form-text text-muted mt-1">请输入要分享的用户邮箱地址</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sharePermission" class="form-label asset-form-label">权限类型</label>
+                                <select class="form-select" id="sharePermission" required>
+                                    <option value="use">使用权限</option>
+                                    <option value="execute">执行权限</option>
+                                </select>
+                                <div class="form-text text-muted mt-1">
+                                    <strong>使用权限</strong>: 只能查看和使用资产<br>
+                                    <strong>执行权限</strong>: 可以修改资产信息
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="submitShareBtn">确认分享</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 删除资产确认模态框 -->
+        <div class="modal fade" id="deleteAssetModal" tabindex="-1" aria-labelledby="deleteAssetModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteAssetModalLabel">确认删除</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>警告</strong>: 此操作不可撤销！
+                        </div>
+                        <p>您确定要删除这个资产吗？删除后将无法恢复。</p>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmDeleteCheck">
+                            <label class="form-check-label" for="confirmDeleteCheck">
+                                我确认要删除此资产
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled>确认删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作结果提示 -->
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">系统提示</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" id="toastMessage">
+                    操作成功！
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer-custom bg-light mt-5 py-4 border-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <h5 class="mb-3">云库</h5>
+                        <p class="mb-1">浊水楼台开源云资源管理系统</p>
+                        <p class="mb-0">© 2025 浊水楼台团队 版权所有</p>
+                    </div>
+                    <div class="col-md-3 mb-4 mb-md-0">
+                        <h5 class="mb-3">链接</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="index.html" class="text-decoration-none">首页</a></li>
+                            <li class="mb-2"><a href="help.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">帮助文档</a></li>
+                            <li class="mb-2"><a href="doc.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">开发者文档</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="mb-3">联系我们</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="https://github.com/ZSLTChenXiYin/CRMS" class="text-decoration-none">GitHub</a></li>
+                            <li class="mb-2">QQ交流群: 123456789</li>
+                            <li>邮箱: contact@example.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
+        <script src="js-cookie-3.0.4/js.cookie.min.js"></script>
+        <script>
+            // 默认的domain值
+            let domain = 'http://localhost:8080';
+
+            // 从源站获取profile.json并更新domain
+            async function fetchProfile() {
+                try {
+                    const response = await fetch('/profile.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const profile = await response.json();
+                    
+                    // 假设profile.json中有api_domain字段
+                    if (profile.api_domain) {
+                        domain = profile.api_domain;
+                        console.log('API domain updated to:', domain);
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch profile.json:', error);
+                    // 使用默认的domain值
+                }
+            }
+
+            // 页面加载时初始化
+            document.addEventListener('DOMContentLoaded', function() {
+                // 首先获取profile.json
+                fetchProfile().then(() => {
+                    // 然后执行其他初始化操作
+                    checkAuthStatus();
+                    fetchAssetList();
+                    
+                    document.getElementById('addAssetBtn').addEventListener('click', showAddAssetModal);
+                    document.getElementById('submitAssetBtn').addEventListener('click', submitAssetForm);
+                    document.getElementById('assetForm').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        submitAssetForm();
+                    });
+
+                    // 添加新的事件监听器
+                    document.getElementById('submitShareBtn').addEventListener('click', submitShareForm);
+                    document.getElementById('confirmDeleteBtn').addEventListener('click', performDeleteAsset);
+                    
+                    // 删除确认复选框事件
+                    document.getElementById('confirmDeleteCheck').addEventListener('change', function() {
+                        document.getElementById('confirmDeleteBtn').disabled = !this.checked;
+                    });
+
+                    // 确保这些函数在全局作用域可用
+                    window.shareAsset = shareAsset;
+                    window.deleteAsset = deleteAsset;
+                });
+            });
+
+            // 检查用户登录状态并更新UI
+            function checkAuthStatus() {
+                const authSection = document.getElementById('auth-section');
+                const userData = Cookies.get('user_data');
+                
+                if (userData) {
+                    try {
+                        const user = JSON.parse(userData);
+                        
+                        // 创建用户下拉菜单
+                        authSection.innerHTML = `
+                            <div class="dropdown">
+                                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="me-2">${user.email}</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="center.html">个人中心</a></li>
+                                    <li><a class="dropdown-item" href="share.html">权限管理</a></li>
+                                    <li><a class="dropdown-item" href="reset-password.html">修改密码</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><button class="dropdown-item" onclick="logout()">退出登录</button></li>
+                                </ul>
+                            </div>
+                        `;
+                    } catch (e) {
+                        console.error('解析用户数据失败:', e);
+                        showLoginButton();
+                        // 清除无效的cookie
+                        Cookies.remove('user_data');
+                        Cookies.remove('auth_token');
+                    }
+                } else {
+                    showLoginButton();
+                    // 如果未登录，跳转到登录页面
+                    window.location.href = 'login.html';
+                }
+            }
+
+            function showLoginButton() {
+                const authSection = document.getElementById('auth-section');
+                authSection.innerHTML = `
+                    <div class="d-flex gap-2">
+                        <a href="login.html" class="btn btn-outline-primary">登录</a>
+                        <a href="register.html" class="btn btn-outline-secondary">注册</a>
+                    </div>
+                `;
+            }
+
+            // 退出登录函数
+            async function logout() {
+                const authToken = Cookies.get('auth_token');
+                
+                if (authToken) {
+                    try {
+                        // 调用注销接口
+                        const response = await fetch(domain + '/user/logout', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`
+                            }
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok) {
+                            console.log('注销成功:', result.message);
+                        } else {
+                            console.error('注销失败:', result.error || result.message);
+                        }
+                    } catch (error) {
+                        console.error('调用注销接口时出错:', error);
+                    }
+                }
+                
+                // 无论API调用是否成功，都清除本地token并更新UI
+                Cookies.remove('user_data', { path: '/' });
+                Cookies.remove('auth_token', { path: '/' });
+                
+                // 更新UI
+                checkAuthStatus();
+                
+                // 跳转到首页
+                window.location.href = 'index.html';
+            }
+
+            // 获取资产列表
+            async function fetchAssetList() {
+                const authToken = Cookies.get('auth_token');
+                
+                if (!authToken) {
+                    console.error('未找到认证令牌');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(domain + '/asset/list', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        console.log('获取资产列表成功:', result.message);
+                        renderAssets(result.private_asset_list, result.public_asset_list);
+                    } else {
+                        console.error('获取资产列表失败:', result.error || result.message);
+                        showError('获取资产列表失败: ' + (result.error || result.message));
+                    }
+                } catch (error) {
+                    console.error('获取资产列表时出错:', error);
+                    showError('获取资产列表时出错: ' + error.message);
+                }
+            }
+            
+            // 渲染资产列表
+            function renderAssets(privateAssets, publicAssets) {
+                const privateContainer = document.getElementById('privateAssetsContainer');
+                const publicContainer = document.getElementById('publicAssetsContainer');
+                
+                // 渲染个人资产
+                if (privateAssets && privateAssets.length > 0) {
+                    privateContainer.innerHTML = '';
+                    privateAssets.forEach(asset => {
+                        privateContainer.appendChild(createAssetCard(asset, true));
+                    });
+                } else {
+                    privateContainer.innerHTML = `
+                        <div class="empty-state">
+                            <p>您还没有任何个人资产</p>
+                            <button class="btn btn-primary mt-2" id="addFirstAssetBtn">添加第一个资产</button>
+                        </div>
+                    `;
+                    document.getElementById('addFirstAssetBtn').addEventListener('click', () => {
+                        showAddAssetModal();
+                    });
+                }
+                
+                // 渲染共享资产
+                if (publicAssets && publicAssets.length > 0) {
+                    publicContainer.innerHTML = '';
+                    publicAssets.forEach(asset => {
+                        publicContainer.appendChild(createAssetCard(asset, false));
+                    });
+                } else {
+                    publicContainer.innerHTML = `
+                        <div class="empty-state">
+                            <p>您目前没有共享资产权限</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // 创建资产卡片
+            function createAssetCard(asset, isPrivate) {
+                const card = document.createElement('div');
+                card.className = 'card asset-card';
+                
+                const cardBody = document.createElement('div');
+                cardBody.className = 'card-body';
+                
+                const row = document.createElement('div');
+                row.className = 'row';
+                
+                // 资产信息列
+                const infoCol = document.createElement('div');
+                infoCol.className = 'col-md-8';
+                
+                const typeBadge = document.createElement('span');
+                typeBadge.className = 'badge bg-primary me-2';
+                typeBadge.textContent = asset.type || '未知类型';
+                
+                const nameHeading = document.createElement('h5');
+                nameHeading.className = 'd-inline-block';
+                nameHeading.textContent = asset.name || '未命名资产';
+                
+                const createdAtDiv = document.createElement('div');
+                createdAtDiv.className = 'text-muted small mt-2';
+                createdAtDiv.innerHTML = `<strong>创建时间:</strong> ${asset.created_at || '未知'}`;
+                
+                const updatedAtDiv = document.createElement('div');
+                updatedAtDiv.className = 'text-muted small';
+                updatedAtDiv.innerHTML = `<strong>更新时间:</strong> ${asset.updated_at || '未知'}`;
+                
+                infoCol.appendChild(typeBadge);
+                infoCol.appendChild(nameHeading);
+                infoCol.appendChild(createdAtDiv);
+                infoCol.appendChild(updatedAtDiv);
+                
+                // 操作按钮列
+                const actionsCol = document.createElement('div');
+                actionsCol.className = 'col-md-4 asset-actions';
+                
+                const btnGroup = document.createElement('div');
+                btnGroup.className = 'float-md-end mt-3 mt-md-0';
+                
+                // 查看按钮
+                const viewBtn = document.createElement('button');
+                viewBtn.className = 'btn btn-sm btn-outline-primary me-2';
+                viewBtn.innerHTML = '<i class="bi bi-eye"></i> 查看';
+                viewBtn.addEventListener('click', () => {
+                    viewAssetDetails(asset.asset_id);
+                });
+                
+                btnGroup.appendChild(viewBtn);
+                
+                // 如果是个人资产，显示修改、分享、删除按钮
+                if (isPrivate) {
+                    // 修改按钮
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'btn btn-sm btn-outline-secondary me-2';
+                    editBtn.innerHTML = '<i class="bi bi-pencil"></i> 修改';
+                    editBtn.addEventListener('click', () => {
+                        editAsset(asset.asset_id);
+                    });
+                    btnGroup.appendChild(editBtn);
+                    
+                    // 分享按钮
+                    const shareBtn = document.createElement('button');
+                    shareBtn.className = 'btn btn-sm btn-outline-info me-2';
+                    shareBtn.innerHTML = '<i class="bi bi-share"></i> 分享';
+                    shareBtn.addEventListener('click', () => {
+                        shareAsset(asset.asset_id);
+                    });
+                    btnGroup.appendChild(shareBtn);
+                    
+                    // 删除按钮
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-sm btn-outline-danger';
+                    deleteBtn.innerHTML = '<i class="bi bi-trash"></i> 删除';
+                    deleteBtn.addEventListener('click', () => {
+                        showDeleteConfirmation(asset.asset_id);
+                    });
+                    btnGroup.appendChild(deleteBtn);
+                } else {
+                    // 如果是共享资产，根据权限显示按钮
+                    if (asset.permission === 'execute') {
+                        // 执行权限可以修改
+                        const editBtn = document.createElement('button');
+                        editBtn.className = 'btn btn-sm btn-outline-secondary me-2';
+                        editBtn.innerHTML = '<i class="bi bi-pencil"></i> 修改';
+                        editBtn.addEventListener('click', () => {
+                            editAsset(asset.asset_id);
+                        });
+                        btnGroup.appendChild(editBtn);
+                    }
+                    
+                    // 显示权限标签
+                    const permissionBadge = document.createElement('span');
+                    permissionBadge.className = asset.permission === 'use' ? 'badge bg-success' : 'badge bg-warning text-dark';
+                    permissionBadge.textContent = asset.permission === 'use' ? '使用权限' : '执行权限';
+                    btnGroup.appendChild(document.createElement('br'));
+                    btnGroup.appendChild(permissionBadge);
+                }
+                
+                actionsCol.appendChild(btnGroup);
+                
+                row.appendChild(infoCol);
+                row.appendChild(actionsCol);
+                cardBody.appendChild(row);
+                card.appendChild(cardBody);
+                
+                return card;
+            }
+            
+            // 查看资产详情
+            async function viewAssetDetails(assetId) {
+                const authToken = Cookies.get('auth_token');
+                
+                if (!authToken) {
+                    showToast('请先登录', 'danger');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`${domain}/asset/info?asset_id=${encodeURIComponent(assetId)}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        console.log('获取资产详情成功:', result.message);
+                        showAssetModal(result.asset, true); // true表示查看模式
+                    } else {
+                        console.error('获取资产详情失败:', result.error || result.message);
+                        showToast('获取资产详情失败: ' + (result.error || result.message), 'danger');
+                    }
+                } catch (error) {
+                    console.error('获取资产详情时出错:', error);
+                    showToast('获取资产详情时出错: ' + error.message, 'danger');
+                }
+            }
+
+            // 编辑资产
+            async function editAsset(assetId) {
+                const authToken = Cookies.get('auth_token');
+                
+                if (!authToken) {
+                    showToast('请先登录', 'danger');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`${domain}/asset/info?asset_id=${encodeURIComponent(assetId)}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        console.log('获取资产详情成功:', result.message);
+                        showAssetModal(result.asset, false); // false表示编辑模式
+                    } else {
+                        console.error('获取资产详情失败:', result.error || result.message);
+                        showToast('获取资产详情失败: ' + (result.error || result.message), 'danger');
+                    }
+                } catch (error) {
+                    console.error('获取资产详情时出错:', error);
+                    showToast('获取资产详情时出错: ' + error.message, 'danger');
+                }
+            }
+
+            // 分享资产
+            async function shareAsset(assetId) {
+                const authToken = Cookies.get('auth_token');
+                
+                if (!authToken) {
+                    showToast('请先登录', 'danger');
+                    return;
+                }
+                
+                // 保存assetId到模态框
+                const modal = document.getElementById('shareAssetModal');
+                modal.dataset.assetId = assetId;
+                
+                // 重置表单
+                document.getElementById('shareAssetForm').reset();
+                
+                // 显示模态框
+                const modalInstance = new bootstrap.Modal(modal);
+                modalInstance.show();
+            }
+
+            // 提交分享表单
+            async function submitShareForm() {
+                const authToken = Cookies.get('auth_token');
+                const modal = document.getElementById('shareAssetModal');
+                const assetId = modal.dataset.assetId;
+                
+                if (!authToken || !assetId) {
+                    showToast('操作失败: 缺少必要参数', 'danger');
+                    return;
+                }
+                
+                const email = document.getElementById('shareEmail').value;
+                const permission = document.getElementById('sharePermission').value;
+                
+                if (!email) {
+                    showToast('请输入用户邮箱', 'danger');
+                    return;
+                }
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('asset_id', assetId);
+                    formData.append('email', email);
+                    formData.append('permission', permission);
+                    
+                    const response = await fetch(domain + '/asset/share', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        showToast('分享成功: ' + result.message, 'success');
+                        // 关闭模态框
+                        const modalInstance = bootstrap.Modal.getInstance(modal);
+                        modalInstance.hide();
+                        // 刷新共享资产列表
+                        fetchAssetList();
+                    } else {
+                        showToast('分享失败: ' + (result.error || result.message), 'danger');
+                    }
+                } catch (error) {
+                    console.error('分享资产时出错:', error);
+                    showToast('分享资产时出错: ' + error.message, 'danger');
+                }
+            }
+
+            // 显示删除确认模态框
+            function showDeleteConfirmation(assetId) {
+                const modal = document.getElementById('deleteAssetModal');
+                modal.dataset.assetId = assetId;
+                
+                // 重置确认复选框
+                document.getElementById('confirmDeleteCheck').checked = false;
+                document.getElementById('confirmDeleteBtn').disabled = true;
+                
+                // 显示模态框
+                const modalInstance = new bootstrap.Modal(modal);
+                modalInstance.show();
+            }
+
+            // 实际执行删除操作
+            async function performDeleteAsset() {
+                const authToken = Cookies.get('auth_token');
+                const modal = document.getElementById('deleteAssetModal');
+                const assetId = modal.dataset.assetId;
+                
+                if (!authToken || !assetId) {
+                    showToast('操作失败: 缺少必要参数', 'danger');
+                    return;
+                }
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('asset_id', assetId);
+                    
+                    const response = await fetch(domain + '/asset/delete', {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        showToast('删除成功: ' + result.message, 'success');
+                        // 关闭模态框
+                        const modalInstance = bootstrap.Modal.getInstance(modal);
+                        modalInstance.hide();
+                        // 刷新资产列表
+                        fetchAssetList();
+                    } else {
+                        showToast('删除失败: ' + (result.error || result.message), 'danger');
+                    }
+                } catch (error) {
+                    console.error('删除资产时出错:', error);
+                    showToast('删除资产时出错: ' + error.message, 'danger');
+                }
+            }
+
+            // 删除资产
+            async function deleteAsset(assetId) {
+                const authToken = Cookies.get('auth_token');
+                
+                if (!authToken) {
+                    showToast('请先登录', 'danger');
+                    return;
+                }
+                
+                if (!confirm('确定要删除这个资产吗？此操作不可撤销！')) {
+                    return;
+                }
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('asset_id', assetId);
+                    
+                    const response = await fetch(domain + '/asset/delete', {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        showToast('删除成功: ' + result.message, 'success');
+                        // 刷新资产列表
+                        fetchAssetList();
+                    } else {
+                        showToast('删除失败: ' + (result.error || result.message), 'danger');
+                    }
+                } catch (error) {
+                    console.error('删除资产时出错:', error);
+                    showToast('删除资产时出错: ' + error.message, 'danger');
+                }
+            }
+            
+            // 显示资产模态框（查看或编辑）
+            function showAssetModal(asset, isViewMode) {
+                const modal = document.getElementById('addAssetModal');
+                const modalTitle = document.getElementById('addAssetModalLabel');
+                const submitBtn = document.getElementById('submitAssetBtn');
+                const form = document.getElementById('assetForm');
+                
+                // 设置模态框标题
+                modalTitle.textContent = isViewMode ? '查看资产详情' : '编辑资产信息';
+                
+                // 设置提交按钮显示状态
+                submitBtn.style.display = isViewMode ? 'none' : 'block';
+                
+                // 填充表单数据
+                if (asset) {
+                    document.getElementById('assetName').value = asset.Name || '';
+                    
+                    try {
+                        // 直接使用asset.Data，因为API返回的已经是解析好的对象
+                        const assetData = asset.Data;
+                        
+                        // 基本信息
+                        document.getElementById('instanceId').value = assetData.instance_id || '';
+                        document.getElementById('instanceName').value = assetData.instance_name || '';
+                        
+                        // 硬件配置
+                        document.getElementById('cpuCores').value = assetData.cpu_core_num || '';
+                        document.getElementById('memorySize').value = assetData.gb_memory_size || '';
+                        document.getElementById('diskSize').value = assetData.gb_disk_size || '';
+                        document.getElementById('bandwidth').value = assetData.mbps || '';
+                        
+                        // 网络信息
+                        document.getElementById('ipv4Address').value = assetData.ipv4_address || '';
+                        document.getElementById('ipv6Address').value = assetData.ipv6_address || '';
+                        
+                        // SSH访问
+                        document.getElementById('sshUsername').value = assetData.ssh_username || '';
+                        document.getElementById('sshPassword').value = assetData.ssh_password || '';
+                        
+                        // 控制面板
+                        document.getElementById('panelAddress').value = assetData.panel_address || '';
+                        document.getElementById('panelUsername').value = assetData.panel_username || '';
+                        document.getElementById('panelPassword').value = assetData.panel_password || '';
+                        
+                        // 到期时间
+                        if (assetData.expire) {
+                            const expireDate = new Date(assetData.expire * 1000);
+                            const formattedDate = expireDate.toISOString().substr(0, 10);
+                            document.getElementById('expireDate').value = formattedDate;
+                        } else {
+                            document.getElementById('expireDate').value = '';
+                        }
+                        
+                        // 设置表单字段的只读状态
+                        const formElements = form.elements;
+                        for (let i = 0; i < formElements.length; i++) {
+                            formElements[i].readOnly = isViewMode;
+                            if (isViewMode) {
+                                formElements[i].classList.add('bg-light');
+                            } else {
+                                formElements[i].classList.remove('bg-light');
+                            }
+                        }
+
+                        // 只有在查看模式下才显示密码切换功能和面板访问按钮
+                        if (isViewMode) {
+                            setupPasswordToggle();
+                            // 将面板地址转换为可点击链接
+                            convertPanelAddressToLink();
+                        } else {
+                            // 在编辑模式下隐藏所有密码切换按钮和面板访问按钮
+                            document.querySelectorAll('.password-toggle-btn').forEach(btn => {
+                                btn.style.display = 'none';
+                            });
+                            // 移除可能存在的面板访问按钮
+                            const existingPanelLink = document.querySelector('#panelAddress + a.btn');
+                            if (existingPanelLink) {
+                                existingPanelLink.remove();
+                            }
+                        }
+                        
+                        // 如果是编辑模式，保存asset_id到表单
+                        if (!isViewMode) {
+                            form.dataset.assetId = asset.ID;
+                        }
+                        
+                    } catch (e) {
+                        console.error('解析资产数据失败:', e);
+                        console.error('原始资产数据:', asset);
+                        showToast('解析资产数据失败: ' + e.message, 'danger');
+                        return;
+                    }
+                }
+                
+                // 显示模态框
+                const modalInstance = new bootstrap.Modal(modal);
+                modalInstance.show();
+            }
+
+            // 更新密码切换功能
+            function setupPasswordToggle() {
+                document.querySelectorAll('.password-toggle-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const targetId = this.getAttribute('data-target');
+                        const passwordField = document.getElementById(targetId);
+                        if (passwordField) {
+                            if (passwordField.type === 'password') {
+                                passwordField.type = 'text';
+                                this.innerHTML = '<i class="bi bi-eye-slash"></i>';
+                            } else {
+                                passwordField.type = 'password';
+                                this.innerHTML = '<i class="bi bi-eye"></i>';
+                            }
+                        }
+                    });
+                });
+            }
+
+            // 更新面板链接功能
+            function setupPanelLink() {
+                const panelAddressField = document.getElementById('panelAddress');
+                const panelLinkBtn = document.getElementById('panelLinkBtn');
+                
+                if (panelAddressField && panelLinkBtn) {
+                    panelAddressField.addEventListener('input', function() {
+                        if (this.value.trim()) {
+                            panelLinkBtn.style.display = 'inline-block';
+                            // 确保地址以http://或https://开头
+                            let address = this.value.trim();
+                            if (!address.startsWith('http://') && !address.startsWith('https://')) {
+                                address = 'http://' + address;
+                            }
+                            panelLinkBtn.href = address;
+                        } else {
+                            panelLinkBtn.style.display = 'none';
+                        }
+                    });
+                }
+            }
+
+            // 将面板地址转换为可点击链接
+            function convertPanelAddressToLink() {
+                const panelAddressField = document.getElementById('panelAddress');
+                if (!panelAddressField || !panelAddressField.value) return;
+                
+                // 确保地址以http://或https://开头
+                let address = panelAddressField.value.trim();
+                if (!address.startsWith('http://') && !address.startsWith('https://')) {
+                    address = 'http://' + address;
+                }
+                
+                // 创建链接按钮
+                const linkBtn = document.createElement('a');
+                linkBtn.href = address;
+                linkBtn.target = '_blank';
+                linkBtn.rel = 'noopener noreferrer';
+                linkBtn.className = 'btn btn-sm btn-outline-primary ms-2';
+                linkBtn.innerHTML = '<i class="bi bi-box-arrow-up-right"></i> 访问面板';
+                
+                // 将按钮添加到输入框后面
+                panelAddressField.insertAdjacentElement('afterend', linkBtn);
+            }
+            
+            // 显示添加资产模态框
+            function showAddAssetModal() {
+                const modal = document.getElementById('addAssetModal');
+                const modalTitle = document.getElementById('addAssetModalLabel');
+                const submitBtn = document.getElementById('submitAssetBtn');
+                const form = document.getElementById('assetForm');
+                
+                // 重置表单
+                form.reset();
+                
+                // 设置模态框标题
+                modalTitle.textContent = '添加服务器资产';
+                
+                // 显示提交按钮
+                submitBtn.style.display = 'block';
+                
+                // 确保表单字段可编辑
+                const formElements = form.elements;
+                for (let i = 0; i < formElements.length; i++) {
+                    formElements[i].readOnly = false;
+                    formElements[i].classList.remove('bg-light');
+                }
+                
+                // 隐藏所有密码切换按钮
+                document.querySelectorAll('.password-toggle-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                });
+                
+                // 移除可能存在的面板访问按钮
+                const existingPanelLink = document.querySelector('#panelAddress + a.btn');
+                if (existingPanelLink) {
+                    existingPanelLink.remove();
+                }
+                
+                // 清除可能存在的asset_id
+                if (form.dataset.assetId) {
+                    delete form.dataset.assetId;
+                }
+                
+                // 显示模态框
+                const modalInstance = new bootstrap.Modal(modal);
+                modalInstance.show();
+            }
+            
+            // 提交资产表单
+            async function submitAssetForm() {
+                const authToken = Cookies.get('auth_token');
+                if (!authToken) {
+                    showToast('请先登录', 'danger');
+                    return;
+                }
+                
+                const form = document.getElementById('assetForm');
+                const isEditMode = !!form.dataset.assetId;
+                
+                // 获取表单数据
+                const assetName = document.getElementById('assetName').value;
+                const instanceId = document.getElementById('instanceId').value;
+                const instanceName = document.getElementById('instanceName').value;
+                const cpuCores = document.getElementById('cpuCores').value;
+                const memorySize = document.getElementById('memorySize').value;
+                const diskSize = document.getElementById('diskSize').value;
+                const bandwidth = document.getElementById('bandwidth').value;
+                const ipv4Address = document.getElementById('ipv4Address').value;
+                const ipv6Address = document.getElementById('ipv6Address').value;
+                const sshUsername = document.getElementById('sshUsername').value;
+                const sshPassword = document.getElementById('sshPassword').value;
+                const panelAddress = document.getElementById('panelAddress').value;
+                const panelUsername = document.getElementById('panelUsername').value;
+                const panelPassword = document.getElementById('panelPassword').value;
+                const expireDate = document.getElementById('expireDate').value;
+                
+                // 验证必填字段
+                if (!assetName || !instanceId || !cpuCores || !memorySize || !diskSize || !bandwidth) {
+                    showToast('请填写所有必填字段', 'danger');
+                    return;
+                }
+                
+                // 构建服务器数据对象
+                const serverData = {
+                    instance_id: instanceId,
+                    instance_name: instanceName,
+                    cpu_core_num: parseInt(cpuCores),
+                    gb_memory_size: parseInt(memorySize),
+                    gb_disk_size: parseInt(diskSize),
+                    mbps: parseInt(bandwidth),
+                    ipv4_address: ipv4Address,
+                    ipv6_address: ipv6Address,
+                    ssh_username: sshUsername,
+                    ssh_password: sshPassword,
+                    panel_address: panelAddress,
+                    panel_username: panelUsername,
+                    panel_password: panelPassword,
+                    expire: expireDate ? Math.floor(new Date(expireDate).getTime() / 1000) : null
+                };
+                
+                try {
+                    let response, result;
+                    
+                    if (isEditMode) {
+                        // 编辑现有资产
+                        const formData = new FormData();
+                        formData.append('asset_id', form.dataset.assetId);
+                        formData.append('reset_type', 'data');
+                        formData.append('new_data', JSON.stringify(serverData));
+                        
+                        response = await fetch(domain + '/asset/update', {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`
+                            },
+                            body: formData
+                        });
+                        
+                        result = await response.json();
+                        
+                        if (response.ok) {
+                            showToast('资产更新成功', 'success');
+                            // 关闭模态框
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('addAssetModal'));
+                            modal.hide();
+                            // 刷新资产列表
+                            fetchAssetList();
+                        } else {
+                            showToast('资产更新失败: ' + (result.error || result.message), 'danger');
+                        }
+                    } else {
+                        // 添加新资产
+                        const formData = new FormData();
+                        formData.append('type', 'server');
+                        formData.append('name', assetName);
+                        formData.append('data', JSON.stringify(serverData));
+                        
+                        response = await fetch(domain + '/asset/add', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`
+                            },
+                            body: formData
+                        });
+                        
+                        result = await response.json();
+                        
+                        if (response.ok) {
+                            showToast('资产添加成功', 'success');
+                            // 关闭模态框
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('addAssetModal'));
+                            modal.hide();
+                            // 刷新资产列表
+                            fetchAssetList();
+                        } else {
+                            showToast('资产添加失败: ' + (result.error || result.message), 'danger');
+                        }
+                    }
+                } catch (error) {
+                    console.error('操作资产时出错:', error);
+                    showToast('操作资产时出错: ' + error.message, 'danger');
+                }
+            }
+            
+            // 显示错误信息
+            function showError(message) {
+                const privateContainer = document.getElementById('privateAssetsContainer');
+                privateContainer.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        ${message}
+                    </div>
+                `;
+                
+                const publicContainer = document.getElementById('publicAssetsContainer');
+                publicContainer.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        ${message}
+                    </div>
+                `;
+            }
+            
+            // 显示Toast提示
+            function showToast(message, type = 'success') {
+                const toastEl = document.getElementById('liveToast');
+                const toastBody = document.getElementById('toastMessage');
+                
+                // 设置Toast样式和内容
+                toastBody.textContent = message;
+                toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning');
+                
+                switch (type) {
+                    case 'success':
+                        toastEl.classList.add('bg-success', 'text-white');
+                        break;
+                    case 'danger':
+                        toastEl.classList.add('bg-danger', 'text-white');
+                        break;
+                    case 'warning':
+                        toastEl.classList.add('bg-warning', 'text-dark');
+                        break;
+                }
+                
+                // 显示Toast
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            }
+        </script>
+    </body>
+</html>

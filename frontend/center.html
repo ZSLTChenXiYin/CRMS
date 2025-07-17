@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="assets/icon/zslt-official.ico" type="image/x-icon">
+        <title>云库 | 个人信息</title>
+        <link href="bootstrap-5.3.6/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            /* 保持原有样式 */
+            .navbar-logo-custom {
+                font-family: "SimSun", "宋体", serif;
+                font-weight: bold;
+            }
+            
+            .footer-custom {
+                font-family: "SimSun", "宋体", serif;
+            }
+
+            .name-custom {
+                font-family: "SimSun", "宋体", serif;
+            }
+            
+            /* 新增个人信息页面样式 */
+            .profile-container {
+                max-width: 800px;
+                margin: 2rem auto;
+                padding: 2rem;
+                background: white;
+                border-radius: 0.5rem;
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            }
+            
+            .profile-header {
+                border-bottom: 1px solid #dee2e6;
+                padding-bottom: 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .profile-detail-item {
+                margin-bottom: 1.5rem;
+            }
+            
+            .profile-detail-label {
+                font-weight: 600;
+                color: #495057;
+            }
+            
+            .profile-detail-value {
+                color: #212529;
+            }
+            
+            .timestamp {
+                color: #6c757d;
+                font-size: 0.875rem;
+            }
+            
+            /* 优化后的粘性页脚样式 */
+            html {
+                height: 100%;
+            }
+            
+            body {
+                min-height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            main {
+                flex: 1;
+                padding: 1rem 0;
+            }
+
+            /* 添加以下CSS到您的样式部分 */
+            .order-lg-2 {
+                order: 2;
+            }
+
+            .order-lg-3 {
+                order: 3;
+            }
+
+            @media (max-width: 992px) {
+                #auth-section {
+                    margin-top: 1rem;
+                    width: 100%;
+                    justify-content: flex-end;
+                }
+                
+                .navbar-collapse {
+                    order: 4;
+                }
+            }
+
+            /* 响应式调整 */
+            @media (max-width: 768px) {
+                .profile-container {
+                    margin: 1rem;
+                    padding: 1.5rem;
+                }
+                
+                .profile-header {
+                    margin-bottom: 1.5rem;
+                }
+                
+                .navbar-brand {
+                    font-size: 1rem;
+                }
+                
+                .footer-custom .row > div {
+                    margin-bottom: 1.5rem;
+                }
+            }
+            
+            @media (max-width: 576px) {
+                .profile-container {
+                    padding: 1rem;
+                    margin: 0.5rem;
+                }
+                
+                .profile-header h2 {
+                    font-size: 1.5rem;
+                }
+                
+                .profile-detail-item {
+                    margin-bottom: 1rem;
+                }
+                
+                #auth-section .btn {
+                    padding: 0.25rem 0.5rem;
+                    font-size: 0.875rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 修改导航栏部分，将auth-section移到navbar-brand同一层级 -->
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand navbar-logo-custom" href="index.html">
+                    <img src="assets/icon/zslt-official.ico" alt="Logo" width="24" height="24" class="d-inline-block align-text-top">
+                    云库
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <!-- 将auth-section放在这里，使用ms-auto使其靠右 -->
+                <div class="d-flex order-lg-3 ms-auto" id="auth-section">
+                    <!-- 这里的内容将由JavaScript动态生成 -->
+                </div>
+                
+                <div class="collapse navbar-collapse order-lg-2" id="navbarScroll">
+                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                        <li class="nav-item">
+                            <a class="nav-link" href="help.html" target="_blank" rel="noopener noreferrer">帮助</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="doc.html" target="_blank" rel="noopener noreferrer">开发者文档</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                关于我们
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="https://github.com/ZSLTChenXiYin/CRMS">Github</a></li>
+                                <li><div class="dropdown-item">QQ交流群 123456789</div></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <button class="btn btn-link text-muted" disabled>关注浊水楼台喵，关注浊水楼台谢谢喵！</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container my-4">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <h2>个人信息</h2>
+                    <p class="text-muted">查看和管理您的账户信息</p>
+                </div>
+                
+                <div id="profile-content">
+                    <!-- 个人信息内容将在这里动态加载 -->
+                    <div class="text-center my-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">加载中...</span>
+                        </div>
+                        <p class="mt-2">正在加载个人信息...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer-custom bg-light py-4 border-top mt-auto">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <h5 class="mb-3">云库</h5>
+                        <p class="mb-1">浊水楼台开源云资源管理系统</p>
+                        <p class="mb-0">© 2025 浊水楼台团队 版权所有</p>
+                    </div>
+                    <div class="col-md-3 mb-4 mb-md-0">
+                        <h5 class="mb-3">链接</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="index.html" class="text-decoration-none">首页</a></li>
+                            <li class="mb-2"><a href="help.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">帮助文档</a></li>
+                            <li class="mb-2"><a href="doc.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">开发者文档</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="mb-3">联系我们</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="https://github.com/ZSLTChenXiYin/CRMS" class="text-decoration-none">GitHub</a></li>
+                            <li class="mb-2">QQ交流群: 123456789</li>
+                            <li>邮箱: contact@example.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
+        <script src="js-cookie-3.0.4/js.cookie.min.js"></script>
+        <script>
+            // 默认domain值
+            let domain = 'http://localhost:8080';
+
+            // 从源站拉取profile.json并更新domain
+            async function fetchDomainConfig() {
+                try {
+                    const response = await fetch('/profile.json');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch profile config');
+                    }
+                    const config = await response.json();
+                    if (config.api_domain) {
+                        domain = config.api_domain;
+                    }
+                } catch (error) {
+                    console.error('Error fetching profile config:', error);
+                    // 使用默认domain值
+                }
+            }
+
+            // 检查用户登录状态并更新UI
+            function checkAuthStatus() {
+                const authSection = document.getElementById('auth-section');
+                const userData = Cookies.get('user_data');
+                
+                if (userData) {
+                    try {
+                        const user = JSON.parse(userData);
+                        
+                        // 创建用户下拉菜单
+                        authSection.innerHTML = `
+                            <div class="dropdown">
+                                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="me-2">${user.email}</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="asset.html">资产管理</a></li>
+                                    <li><a class="dropdown-item" href="share.html">权限管理</a></li>
+                                    <li><a class="dropdown-item" href="reset-password.html">修改密码</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><button class="dropdown-item" onclick="logout()">退出登录</button></li>
+                                </ul>
+                            </div>
+                        `;
+                    } catch (e) {
+                        console.error('解析用户数据失败:', e);
+                        showLoginButton();
+                        // 清除无效的cookie
+                        Cookies.remove('user_data');
+                        Cookies.remove('auth_token');
+                    }
+                } else {
+                    showLoginButton();
+                }
+            }
+
+            function showLoginButton() {
+                const authSection = document.getElementById('auth-section');
+                authSection.innerHTML = `
+                    <div class="d-flex gap-2">
+                        <a href="login.html" class="btn btn-outline-primary">登录</a>
+                        <a href="register.html" class="btn btn-outline-secondary">注册</a>
+                    </div>
+                `;
+            }
+
+            // 退出登录函数
+            async function logout() {
+                const authToken = Cookies.get('auth_token');
+                
+                if (authToken) {
+                    try {
+                        // 调用注销接口
+                        const response = await fetch(domain + '/user/logout', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`
+                            }
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok) {
+                            console.log('注销成功:', result.message);
+                        } else {
+                            console.error('注销失败:', result.error || result.message);
+                        }
+                    } catch (error) {
+                        console.error('调用注销接口时出错:', error);
+                    }
+                }
+                
+                // 无论API调用是否成功，都清除本地token并更新UI
+                Cookies.remove('user_data', { path: '/' });
+                Cookies.remove('auth_token', { path: '/' });
+                
+                // 更新UI
+                checkAuthStatus();
+                
+                // 跳转到首页
+                window.location.href = 'index.html';
+            }
+
+            // 格式化时间戳为可读格式
+            function formatTimestamp(timestamp) {
+                if (!timestamp) return '未知时间';
+                
+                const date = new Date(timestamp * 1000);
+                return date.toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+            }
+
+            // 加载用户信息
+            async function loadUserProfile() {
+                const authToken = Cookies.get('auth_token');
+                
+                if (!authToken) {
+                    // 未登录，跳转到登录页面
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                try {
+                    // 调用用户信息接口
+                    const response = await fetch(domain + '/user/info', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok && result.message === '查询用户个人信息成功') {
+                        // 更新本地存储的用户数据
+                        const userData = {
+                            email: result.email,
+                            created_at: result.created_at,
+                            last_login_at: result.last_login_at
+                        };
+                        
+                        Cookies.set('user_data', JSON.stringify(userData), {
+                            expires: 7,
+                            path: '/'
+                        });
+                        
+                        // 显示用户信息
+                        displayUserProfile(userData);
+                    } else {
+                        // 获取信息失败，可能是token无效
+                        console.error('获取用户信息失败:', result.error || result.message);
+                        Cookies.remove('user_data');
+                        Cookies.remove('auth_token');
+                        window.location.href = 'login.html';
+                    }
+                } catch (error) {
+                    console.error('获取用户信息时出错:', error);
+                    document.getElementById('profile-content').innerHTML = `
+                        <div class="alert alert-danger">
+                            <h5 class="alert-heading">加载失败</h5>
+                            <p>无法连接到服务器，请检查您的网络连接后刷新页面重试。</p>
+                            <hr>
+                            <button class="btn btn-danger" onclick="window.location.reload()">刷新页面</button>
+                        </div>
+                    `;
+                }
+            }
+
+            // 显示用户信息
+            function displayUserProfile(userData) {
+                const profileContent = document.getElementById('profile-content');
+                
+                profileContent.innerHTML = `
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">电子邮箱</div>
+                        <div class="profile-detail-value">${userData.email}</div>
+                    </div>
+                    
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">账户创建时间</div>
+                        <div class="profile-detail-value">
+                            <span class="timestamp">${userData.created_at}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">上次登录时间</div>
+                        <div class="profile-detail-value">
+                            <span class="timestamp">${userData.last_login_at}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-3 border-top">
+                        <a href="reset-password.html" class="btn btn-primary me-2">修改密码</a>
+                        <button class="btn btn-outline-danger" onclick="logout()">退出登录</button>
+                    </div>
+                `;
+            }
+
+            // 页面加载时初始化
+            document.addEventListener('DOMContentLoaded', async function() {
+                await fetchDomainConfig();
+                checkAuthStatus();
+                loadUserProfile();
+            });
+        </script>
+    </body>
+</html>

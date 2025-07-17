@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="assets/icon/zslt-official.ico" type="image/x-icon">
+        <title>云库 | 登录</title>
+        <link href="bootstrap-5.3.6/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            /* 改进的布局结构 */
+            html, body {
+                height: 100%;
+            }
+            
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                margin: 0;
+            }
+            
+            .navbar-logo-custom {
+                font-family: "SimSun", "宋体", serif;
+                font-weight: bold;
+            }
+            
+            .footer-custom {
+                font-family: "SimSun", "宋体", serif;
+                margin-top: auto; /* 确保页脚始终在底部 */
+                width: 100%;
+            }
+
+            main.container {
+                flex: 1 0 auto; /* 允许主内容区域增长 */
+                padding: 2rem 0;
+                display: flex;
+                align-items: center;
+            }
+
+            .login-container {
+                max-width: 500px;
+                width: 100%;
+                margin: 0 auto;
+                padding: 2.5rem;
+                background: white;
+                border-radius: 0.75rem;
+                box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
+                border: 1px solid rgba(0, 0, 0, 0.05);
+            }
+            
+            .login-title {
+                font-family: "SimSun", "宋体", serif;
+                text-align: center;
+                margin-bottom: 2rem;
+                color: #333;
+                font-size: 1.75rem;
+                font-weight: 600;
+            }
+            
+            .form-floating label {
+                padding: 0.8rem 1.75rem;
+                color: #6c757d;
+            }
+            
+            .form-floating input {
+                height: calc(3.5rem + 2px);
+                padding: 1rem 1.75rem;
+                border-radius: 0.5rem;
+                border: 1px solid #ced4da;
+                transition: all 0.2s ease;
+            }
+            
+            .form-floating input:focus {
+                border-color: #86b7fe;
+                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+            }
+            
+            .login-btn {
+                width: 100%;
+                padding: 0.75rem;
+                font-weight: 600;
+                border-radius: 0.5rem;
+                transition: all 0.2s ease;
+            }
+            
+            .btn-primary {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+            }
+            
+            .btn-primary:hover {
+                background-color: #0b5ed7;
+                border-color: #0a58ca;
+                transform: translateY(-1px);
+            }
+            
+            .btn-outline-primary {
+                color: #0d6efd;
+                border-color: #0d6efd;
+            }
+            
+            .btn-outline-primary:hover {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+                transform: translateY(-1px);
+            }
+            
+            .login-links {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 1rem;
+            }
+            
+            .login-divider {
+                position: relative;
+                margin: 2rem 0;
+                text-align: center;
+                color: #6c757d;
+            }
+            
+            .login-divider::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background-color: #dee2e6;
+                z-index: -1;
+            }
+            
+            .login-divider-text {
+                display: inline-block;
+                padding: 0 1rem;
+                background-color: white;
+            }
+            
+            .remember-me {
+                margin-bottom: 1.5rem;
+            }
+            
+            @media (max-width: 768px) {
+                .login-container {
+                    padding: 2rem;
+                }
+            }
+            
+            @media (max-width: 576px) {
+                .login-container {
+                    padding: 1.5rem;
+                    box-shadow: none;
+                    border: none;
+                    margin: 0 auto;
+                }
+                
+                .login-links {
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+                
+                main.container {
+                    padding: 1rem 0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 保持所有HTML内容不变 -->
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand navbar-logo-custom" href="index.html">
+                    <img src="assets/icon/zslt-official.ico" alt="Logo" width="24" height="24" class="d-inline-block align-text-top">
+                    云库
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarScroll">
+                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                        <li class="nav-item">
+                            <a class="nav-link" href="help.html" target="_blank" rel="noopener noreferrer">帮助</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="doc.html" target="_blank" rel="noopener noreferrer">开发者文档</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                关于我们
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="https://github.com/ZSLTChenXiYin/CRMS">Github</a></li>
+                                <li><div class="dropdown-item">QQ交流群 123456789</div></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <button class="btn btn-link text-muted" disabled>关注浊水楼台喵，关注浊水楼台谢谢喵！</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container">
+            <div class="login-container">
+                <h2 class="login-title">登录云库账号</h2>
+                
+                <form id="loginForm" class="needs-validation" novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" required>
+                        <label for="floatingEmail">邮箱地址</label>
+                        <div class="invalid-feedback">
+                            请输入有效的邮箱地址
+                        </div>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+                        <label for="floatingPassword">密码</label>
+                        <div class="invalid-feedback">
+                            请输入密码
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-danger d-none" id="errorAlert" role="alert"></div>
+                    
+                    <button class="btn btn-primary login-btn mb-3" type="submit" id="submitBtn">登录</button>
+                    
+                    <div class="login-divider">
+                        <span class="login-divider-text">没有账号？</span>
+                    </div>
+                    
+                    <div class="login-links">
+                        <a href="register.html" class="btn btn-outline-primary login-btn">创建新账号</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <footer class="footer-custom bg-light py-4 border-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <h5 class="mb-3">云库</h5>
+                        <p class="mb-1">浊水楼台开源云资源管理系统</p>
+                        <p class="mb-0">© 2025 浊水楼台团队 版权所有</p>
+                    </div>
+                    <div class="col-md-3 mb-4 mb-md-0">
+                        <h5 class="mb-3">链接</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="index.html" class="text-decoration-none">首页</a></li>
+                            <li class="mb-2"><a href="help.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">帮助文档</a></li>
+                            <li class="mb-2"><a href="doc.html" class="text-decoration-none" target="_blank" rel="noopener noreferrer">开发者文档</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="mb-3">联系我们</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="https://github.com/ZSLTChenXiYin/CRMS" class="text-decoration-none">GitHub</a></li>
+                            <li class="mb-2">QQ交流群: 123456789</li>
+                            <li>邮箱: contact@example.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
+        <script src="js-cookie-3.0.4/js.cookie.min.js"></script>
+        <script>
+            // 默认domain值
+            let api_domain = 'http://localhost:8080';
+
+            // 从源站拉取profile.json并更新domain
+            async function fetchDomainConfig() {
+                try {
+                    const response = await fetch('/profile.json');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch profile config');
+                    }
+                    const config = await response.json();
+                    if (config.api_domain) {
+                        api_domain = config.api_domain;
+                    }
+                } catch (error) {
+                    console.error('Error fetching profile config:', error);
+                    // 使用默认domain值
+                }
+            }
+
+            // 在页面加载时获取配置
+            document.addEventListener('DOMContentLoaded', async function() {
+                await fetchDomainConfig();
+                
+                // 检查是否已登录
+                const authToken = Cookies.get('auth_token');
+                if (authToken) {
+                    // 如果已有 token，则可能已登录，跳转到主页
+                    window.location.href = 'index.html';
+                }
+            });
+
+            // 表单验证脚本
+            (function() {
+                'use strict';
+                
+                // 获取所有需要验证的表单
+                var forms = document.querySelectorAll('.needs-validation');
+                
+                // 循环并阻止提交
+                Array.prototype.slice.call(forms)
+                    .forEach(function(form) {
+                        form.addEventListener('submit', function(event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+            })();
+
+            // 登录功能实现
+            document.getElementById('loginForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('floatingEmail').value;
+                const password = document.getElementById('floatingPassword').value;
+                const errorAlert = document.getElementById('errorAlert');
+                const submitBtn = document.getElementById('submitBtn');
+                
+                // 验证表单
+                if (!email || !password) {
+                    return;
+                }
+                
+                // 禁用提交按钮防止重复提交
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 登录中...';
+                
+                try {
+                    // 调用登录接口
+                    const loginResponse = await fetch(api_domain + '/user/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            email: email,
+                            password: password
+                        })
+                    });
+                    
+                    const loginData = await loginResponse.json();
+                    
+                    if (!loginResponse.ok || loginData.message !== '登录成功') {
+                        throw new Error(loginData.error || '登录失败，请检查邮箱和密码');
+                    }
+                    
+                    // 使用 js-cookie 存储 token
+                    Cookies.set('auth_token', loginData.token, {
+                        expires: 7, // 7天后过期
+                        path: '/',
+                    });
+                    
+                    // 使用token获取用户信息
+                    const userInfoResponse = await fetch(api_domain + '/user/info', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${loginData.token}`
+                        }
+                    });
+                    
+                    const userInfoData = await userInfoResponse.json();
+                    
+                    if (!userInfoResponse.ok || userInfoData.message !== '查询用户个人信息成功') {
+                        throw new Error(userInfoData.error || '获取用户信息失败');
+                    }
+
+                    const userData = {
+                        email: userInfoData.email,
+                        created_at: userInfoData.created_at,
+                        last_login_at: userInfoData.last_login_at
+                    }
+                    
+                    // 使用 js-cookie 存储用户信息
+                    Cookies.set('user_data', JSON.stringify(userData), {
+                        expires: 7,
+                        path: '/'
+                    });
+                    
+                    // 登录成功，跳转到首页
+                    window.location.href = 'index.html';
+                    
+                } catch (error) {
+                    // 显示错误信息
+                    errorAlert.textContent = error.message;
+                    errorAlert.classList.remove('d-none');
+                    
+                    // 恢复提交按钮
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '登录';
+                    
+                    // 5秒后自动隐藏错误信息
+                    setTimeout(() => {
+                        errorAlert.classList.add('d-none');
+                    }, 5000);
+                    
+                    // 清除可能已设置的 cookie
+                    Cookies.remove('auth_token');
+                    Cookies.remove('user_data');
+                }
+            });
+        </script>
+    </body>
+</html>
