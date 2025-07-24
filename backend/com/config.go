@@ -8,11 +8,13 @@ import (
 )
 
 type config struct {
-	ReleaseMode bool   `json:"release_mode"`
-	AutoMigrate bool   `json:"auto_migrate"`
-	DSN         string `json:"dsn"`
-	JwtSecret   []byte `json:"jwt_secret"`
-	Port        int    `json:"port"`
+	ReleaseMode   bool   `json:"release_mode"`
+	AutoMigrate   bool   `json:"auto_migrate"`
+	DSN           string `json:"dsn"`
+	RedisAddress  string `json:"redis_address"`
+	RedisPassword string `json:"redis_password"`
+	JwtSecret     []byte `json:"jwt_secret"`
+	Port          int    `json:"port"`
 }
 
 func InitConfig() error {

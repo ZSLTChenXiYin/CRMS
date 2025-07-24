@@ -2,6 +2,8 @@
     "release_mode": true,
     "auto_migrate": true,
     "dsn": "crms:cloResMgtsys@tcp(localhost:3306)/crms?charset=utf8mb4&parseTime=True",
+    "redis_address": "localhost:6379",
+    "redis_password": "",
     "jwt_secret": "cloResMgtsys",
     "port": 8080
 }

@@ -131,6 +131,34 @@ func PostLogin(c *gin.Context) {
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 
+	exists, err := com.Redis.Exists(com.Context, email).Result()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "登录失败",
+			"error":   err.Error(),
+		})
+		log.Panicln("[ERROR]", err)
+		return
+	}
+
+	if exists == 1 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "登录失败",
+			"error":   "登录请求太过频繁，请5秒后再试",
+		})
+		return
+	}
+
+	err = com.Redis.Set(com.Context, email, 1, 5*time.Second).Err()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "登录失败",
+			"error":   err.Error(),
+		})
+		log.Panicln("[ERROR]", err)
+		return
+	}
+
 	// 创建用户服务
 	user_service := service.NewUserService(com.Database)
 

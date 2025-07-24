@@ -3,6 +3,7 @@ package com
 import (
 	"log"
 
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -15,7 +16,20 @@ func InitDatabase() error {
 	}
 	Database = db
 
-	log.Println("[INFO] 数据库连接成功")
+	log.Println("[INFO] MySQL连接成功")
+
+	Redis = redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+
+	pong, err := Redis.Ping(Context).Result()
+	if err != nil {
+		return err
+	}
+
+	log.Println("[INFO] Redis连接成功:", pong)
 
 	return nil
 }
