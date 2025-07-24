@@ -19,8 +19,8 @@ func InitDatabase() error {
 	log.Println("[INFO] MySQL连接成功")
 
 	Redis = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
+		Addr:     Config.RedisAddress,
+		Password: Config.RedisPassword,
 		DB:       0,
 	})
 
